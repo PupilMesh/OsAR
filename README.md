@@ -1,2 +1,2 @@
 # OSAR
-## It is an open source project to develope AR application with external peripheral
+## An open source AR SDK for Plug and Play Smart glasses
