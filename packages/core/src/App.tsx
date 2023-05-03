@@ -5,7 +5,7 @@
 
 import React, {useCallback, useEffect} from 'react';
 import {Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Scene, StandardMaterial, UniversalCamera, Vector3} from '@babylonjs/core';
-import {StatusBar, View, Text, Platform,NativeEventEmitter,NativeModules} from 'react-native';
+import {StatusBar, View, Text, Platform,NativeEventEmitter,NativeModules,Image} from 'react-native';
 import GLRenderer from './components/GLRenderer';
 import useStyles from './styles';
 import {
@@ -25,7 +25,7 @@ let isImageUpdated = true
 export default function App() {
 
   //code to getting frames
-  const [imageUri, setImageUri] = useState(null)
+  const [imageUri, setImageUri] = useState("")
   const [frameCount, setFrameCount] = useState(0)
 const [fps, setFps] = useState(0);
 let lastUpdateTime = Date.now();
@@ -33,12 +33,12 @@ let lastUpdateTime = Date.now();
 const getImage = () => {
   cameraEmitter.addListener('cameraFrame', event => {
     const url = 'data:image/jpeg;base64,' + event
+    setImageUri(url)
     setFrameCount((prevFrameCount) => prevFrameCount + 1);
 
         const currentTime = Date.now();
         const elapsedTime = (currentTime - lastUpdateTime) / 1000; // Time in seconds
         lastUpdateTime = currentTime;
-
         const currentFps = Math.floor(1 / elapsedTime);
         setFps(currentFps);
 
@@ -116,6 +116,12 @@ if(isImageUpdated){
       <StatusBar backgroundColor={'black'} />
       <GLRenderer onCreateEngine={onCreateEngine} />
       <View style={styles.Overlay_Root}>
+      {imageUri!="" && (
+              <Image
+                source={{ uri: imageUri }}
+                style={styles.image}
+              />
+            )}
         <Text numberOfLines={0} allowFontScaling={false} style={styles.Overlay_Text}>
          {"Frame "+frameCount}
         </Text>
