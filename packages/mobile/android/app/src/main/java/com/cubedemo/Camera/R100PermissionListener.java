@@ -1,0 +1,5 @@
+package com.cubedemo.Camera;
+
+public interface R100PermissionListener {
+    void permissionGranted(Boolean bool,int code);
+}
