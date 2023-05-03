@@ -22,7 +22,11 @@ const useStyles = () => {
       textShadowOffset: {width: vmin(0.25), height: vmin(0.2)},
       textShadowRadius: vmin(0.01),
       padding: 50,
-    }
+    },
+    image: {
+      width: 400,
+      height: 400,
+    },
   });
 };
 
