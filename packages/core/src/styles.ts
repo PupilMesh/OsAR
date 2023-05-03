@@ -20,7 +20,8 @@ const useStyles = () => {
       fontWeight: '600',
       textShadowColor: 'rgba(0, 0, 0, 0.45)',
       textShadowOffset: {width: vmin(0.25), height: vmin(0.2)},
-      textShadowRadius: vmin(0.01)
+      textShadowRadius: vmin(0.01),
+      padding: 50,
     }
   });
 };

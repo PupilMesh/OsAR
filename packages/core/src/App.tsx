@@ -19,19 +19,29 @@ import {useState} from 'react'
 const frameModule = NativeModules.CameraFrame
 
 const cameraEmitter = new NativeEventEmitter(frameModule)
-var isImageUpdated = true
+let isImageUpdated = true
 
 
 export default function App() {
 
   //code to getting frames
   const [imageUri, setImageUri] = useState(null)
+  const [frameCount, setFrameCount] = useState(0)
+const [fps, setFps] = useState(0);
+let lastUpdateTime = Date.now();
 
 const getImage = () => {
   cameraEmitter.addListener('cameraFrame', event => {
-    const url = 'data:image/png;base64,' + event
-    let len = event.length;
-    console.log(len)
+    const url = 'data:image/jpeg;base64,' + event
+    setFrameCount((prevFrameCount) => prevFrameCount + 1);
+
+        const currentTime = Date.now();
+        const elapsedTime = (currentTime - lastUpdateTime) / 1000; // Time in seconds
+        lastUpdateTime = currentTime;
+
+        const currentFps = Math.floor(1 / elapsedTime);
+        setFps(currentFps);
+
   })
 }
 if(isImageUpdated){
@@ -107,7 +117,10 @@ if(isImageUpdated){
       <GLRenderer onCreateEngine={onCreateEngine} />
       <View style={styles.Overlay_Root}>
         <Text numberOfLines={0} allowFontScaling={false} style={styles.Overlay_Text}>
-          ROTATING-CUBE-DEMO-BABYLON-RXN
+         {"Frame "+frameCount}
+        </Text>
+         <Text numberOfLines={0} allowFontScaling={false} style={styles.Overlay_Text}>
+         {"FPS "+fps}
         </Text>
       </View>
     </View>
