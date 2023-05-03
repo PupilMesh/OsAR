@@ -17,6 +17,7 @@ import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 
 public class MainActivity extends ReactActivity {
 
@@ -37,14 +38,24 @@ public class MainActivity extends ReactActivity {
     @Override
     public void onCameraFrame(Bitmap bitmap, long timestamp) {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
+      // bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
+      bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
       byte[] bytes = outputStream.toByteArray();
+
+      
+      // To Test the frame rate
+      // int staticValue = 42; 
+      // int byteArraySize = 1; 
+
+      // byte[] bytes = new byte[byteArraySize];
+      // Arrays.fill(bytes, (byte) staticValue);
+
       CameraFrameModule.sendCameraFrame(bytes);
     }
 
     @Override
     public void onCameraFrame(byte[] bytes, String format, int height, int width) {
-      Log.i(TAG,"Byte arrary comming");
+      Log.i(TAG,"Byte arrary coming");
     }
   };
   R100PermissionListener listener = new R100PermissionListener() {
