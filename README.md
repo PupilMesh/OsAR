@@ -15,13 +15,15 @@ Follow these instructions to set up and run the OSAR project on your local machi
 #### Installation
 
 1. Clone the repository.
-2. Navigate to the `/packages/core` directory and run `npm install`.
-3. Navigate to the `/packages/mobile` directory and run `npm install`.
+2. Navigate to the `/packages/mobile` directory and run `npm install`.
 
 #### Configuration
 
-1. The Babylon Native 3D engine can be found in `/packages/core/App.tsx`.
+1. The Babylon Native 3D engine can be found in `/packages/mobile/src/App.tsx`.
 2. Update the VendorID and ProductID of your USB camera in `packages/mobile/android/app/src/main/java/com/cubedemo/MainActivity.java`.
+3. Update the JPEG compression quality in `MainActivity.java` based on device capablity.
+4. The frame buffer size from `/packages/mobile/src/App.tsx` can also be updated based on need. 
+
 
 #### Running the Project
 
