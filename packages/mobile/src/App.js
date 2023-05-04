@@ -20,7 +20,7 @@ LogBox.ignoreLogs([
 const frameModule = NativeModules.CameraFrame;
 const cameraEmitter = new NativeEventEmitter(frameModule);
 
-const BUFFER_SIZE = 15;
+const BUFFER_SIZE = 10;
 
 export default function App() {
   const [imageUris, setImageUris] = useState(Array(BUFFER_SIZE).fill(""));
@@ -57,10 +57,10 @@ export default function App() {
 
     setUpdateIntervalForType(SensorTypes.gyroscope, 50);
       const intervalId = setInterval(() => {
-          // Clear disk cache every 3 seconds
+          // Clear disk cache every 10 seconds
           FastImage.clearDiskCache();
 
-          // Clear memory cache every 3 seconds
+          // Clear memory cache every 10 seconds
           FastImage.clearMemoryCache();
         }, 10000);
 
