@@ -19,6 +19,7 @@
     "react-native-monorepo-tools": "^1.2.0",
     "react-native-permissions": "^3.6.0",
     "react-native-sensors": "^7.3.6",
+    "rxn-units": "^0.1.7",
     "util": "^0.12.5"
   },
   "devDependencies": {
