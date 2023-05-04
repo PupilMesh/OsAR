@@ -52,12 +52,6 @@ cap.set(cv2.CAP_PROP_CONVERT_RGB, 1)
 akaze = cv2.AKAZE_create()
 curr_dir= os.getcwd()
 
-# Load the smaller images and precompute keypoints and descriptors
-# smaller_images = {
-#     "image1": (cv2.imread("C:/Users/Krishnan/Desktop/PupilMesh/Python/marker.jpeg", cv2.IMREAD_GRAYSCALE), *akaze.detectAndCompute(cv2.imread(curr_dir+"/Python/marker.jpeg", cv2.IMREAD_GRAYSCALE), None)),
-#     "image2": (cv2.imread("C:/Users/Krishnan/Desktop/PupilMesh/Python/marker7.jpeg", cv2.IMREAD_GRAYSCALE), *akaze.detectAndCompute(cv2.imread("C:/Users/Krishnan/Desktop/PupilMesh/Python/marker7.jpeg", cv2.IMREAD_GRAYSCALE), None)),
-#     # Add more images as needed
-# }
 
 image1_url = "https://res.cloudinary.com/doblnhena/image/upload/v1682431189/marker_lpmhnx.jpg"
 image2_url = "https://res.cloudinary.com/doblnhena/image/upload/v1682431190/marker7_e5h36e.jpg"
