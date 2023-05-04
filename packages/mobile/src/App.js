@@ -11,6 +11,7 @@ import useStyles from './styles';
 import { accelerometer, gyroscope, setUpdateIntervalForType, SensorTypes } from "react-native-sensors";
 import { useState } from 'react';
 import { LogBox } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 LogBox.ignoreLogs([
   'Require cycle:',
@@ -19,7 +20,7 @@ LogBox.ignoreLogs([
 const frameModule = NativeModules.CameraFrame;
 const cameraEmitter = new NativeEventEmitter(frameModule);
 
-const BUFFER_SIZE = 7;
+const BUFFER_SIZE = 15;
 
 export default function App() {
   const [imageUris, setImageUris] = useState(Array(BUFFER_SIZE).fill(""));
@@ -55,9 +56,18 @@ export default function App() {
     });
 
     setUpdateIntervalForType(SensorTypes.gyroscope, 50);
+      const intervalId = setInterval(() => {
+          // Clear disk cache every 3 seconds
+          FastImage.clearDiskCache();
 
+          // Clear memory cache every 3 seconds
+          FastImage.clearMemoryCache();
+        }, 10000);
+
+ 
     return () => {
       subscription.remove();
+      clearInterval(intervalId);
     };
   }, []);
 
@@ -118,13 +128,17 @@ return (
   <View style={styles.Overlay_Root}>
     {imageUris.map((uri, index) => (
       visibleFrames[index] && (
-        <Image
+        <FastImage
           key={index}
-          source={{ uri }}
+          source={{
+            uri,
+            priority: FastImage.priority.high,
+          }}
           style={styles.image}
         />
       )
     ))}
+
     <Text numberOfLines={0} allowFontScaling={false} style={styles.Overlay_Text}>
       {"Frame : " + frameCount}
     </Text>

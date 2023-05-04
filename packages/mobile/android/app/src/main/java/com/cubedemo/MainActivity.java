@@ -34,12 +34,16 @@ public class MainActivity extends ReactActivity {
     externalCamera = new ManageExternalCamera(this,this);
     externalCamera.setFrameListner(frameListner);
   }
+
   CameraFrames frameListner = new CameraFrames() {
+    private static final long FRAME_INTERVAL_MS = 1000 / 24; // 24 fps
+    private long lastFrameTime = System.currentTimeMillis();
+
     @Override
     public void onCameraFrame(Bitmap bitmap, long timestamp) {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       // bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
-      bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream);
+      bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
       byte[] bytes = outputStream.toByteArray();
 
       
