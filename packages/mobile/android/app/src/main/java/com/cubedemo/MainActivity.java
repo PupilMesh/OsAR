@@ -1,9 +1,9 @@
 package com.cubedemo;
 
 
-import com.chaquo.python.PyObject;
-import com.chaquo.python.Python;
-import com.chaquo.python.android.AndroidPlatform;
+// import com.chaquo.python.PyObject;
+// import com.chaquo.python.Python;
+// import com.chaquo.python.android.AndroidPlatform;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -27,40 +27,37 @@ import java.util.Arrays;
 
 public class MainActivity extends ReactActivity {
 
-  String  TAG = "CheckCamera";
-  boolean hasPermission=false;
+  String TAG = "CheckCamera";
+  boolean hasPermission = false;
   R100PermissionManager permissionManager;
-  boolean hasCameraPermission=false;
+  boolean hasCameraPermission = false;
   ManageExternalCamera externalCamera;
 
+  // private Python py;
+  // private PyObject markerDetectionFunction;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  // @Override
+  // protected void onCreate(Bundle savedInstanceState) {
+  //   super.onCreate(savedInstanceState);
 
-    if (!Python.isStarted()) {
-      Python.start(new AndroidPlatform(this));
-    }
-  }
-
-  private Python py;
-  private PyObject markerDetectionFunction;
+  //   if (!Python.isStarted()) {
+  //     Python.start(new AndroidPlatform(this));
+  //   }
+  // py=Python.getInstance();
+  // markerDetectionFunction=py.getModule("image_process").get("detect_marker");
+  // }
 
   @Override
   protected void onStart() {
     super.onStart();
-    permissionManager = new R100PermissionManager(this,listener);
-    externalCamera = new ManageExternalCamera(this,this);
-    externalCamera.setFrameListner(frameListner);    
-    py = Python.getInstance();
-    markerDetectionFunction = py.getModule("image_process").get("detect_marker");
-
+    permissionManager = new R100PermissionManager(this, listener);
+    externalCamera = new ManageExternalCamera(this, this);
+    externalCamera.setFrameListner(frameListner);
   }
 
   CameraFrames frameListner = new CameraFrames() {
     private static final long FRAME_INTERVAL_MS = 1000 / 24; // 24 fps
     private long lastFrameTime = System.currentTimeMillis();
-    
 
     @Override
     public void onCameraFrame(Bitmap bitmap, long timestamp) {
@@ -70,9 +67,9 @@ public class MainActivity extends ReactActivity {
       bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
       byte[] bytes = outputStream.toByteArray();
 
-      PyObject result = markerDetectionFunction.call(bytes);
-      bytes = result.toJava(byte[].class);
-      
+      // PyObject result = markerDetectionFunction.call(bytes);
+      // bytes = result.toJava(byte[].class);
+
       // To Test the frame rate
       // int staticValue = 42; 
       // int byteArraySize = 1; 
@@ -85,25 +82,25 @@ public class MainActivity extends ReactActivity {
 
     @Override
     public void onCameraFrame(byte[] bytes, String format, int height, int width) {
-      Log.i(TAG,"Byte arrary coming");
+      Log.i(TAG, "Byte arrary coming");
     }
   };
   R100PermissionListener listener = new R100PermissionListener() {
     @Override
     public void permissionGranted(Boolean bool, int code) {
-      Log.i(TAG,"Permission Granted");
+      Log.i(TAG, "Permission Granted");
       hasCameraPermission = true;
       externalCamera.openCamera();
     }
   };
+
   @Override
   protected void onResume() {
     super.onResume();
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
-      ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, 20);
-    }
-    else if(!hasPermission){
-      Log.i(TAG,"Sent for permission");
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+      ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA }, 20);
+    } else if (!hasPermission) {
+      Log.i(TAG, "Sent for permission");
       permissionManager.requestCameraPermission(1008, 2137);
     }
   }
