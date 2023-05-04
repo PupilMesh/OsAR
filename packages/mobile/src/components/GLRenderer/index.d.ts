@@ -1,10 +1,8 @@
-import {Engine} from '@babylonjs/core/Engines/engine';
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-const GLRenderer: ({onCreateEngine}: IProps) => JSX.Element;
+import { Engine } from '@babylonjs/core/Engines/engine';
 
 export interface IProps {
-  onCreateEngine: (onCreateEngine?: Engine) => void;
+  onCreateEngine: (engine?: Engine) => void;
 }
 
+declare const GLRenderer: (props: IProps) => JSX.Element;
 export default GLRenderer;

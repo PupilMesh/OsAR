@@ -1,9 +1,15 @@
 package com.cubedemo;
 
+
+import com.chaquo.python.PyObject;
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.os.Bundle;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -27,25 +33,45 @@ public class MainActivity extends ReactActivity {
   boolean hasCameraPermission=false;
   ManageExternalCamera externalCamera;
 
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    if (!Python.isStarted()) {
+      Python.start(new AndroidPlatform(this));
+    }
+  }
+
+  private Python py;
+  private PyObject markerDetectionFunction;
+
   @Override
   protected void onStart() {
     super.onStart();
     permissionManager = new R100PermissionManager(this,listener);
     externalCamera = new ManageExternalCamera(this,this);
-    externalCamera.setFrameListner(frameListner);
+    externalCamera.setFrameListner(frameListner);    
+    py = Python.getInstance();
+    markerDetectionFunction = py.getModule("image_process").get("detect_marker");
+
   }
 
   CameraFrames frameListner = new CameraFrames() {
     private static final long FRAME_INTERVAL_MS = 1000 / 24; // 24 fps
     private long lastFrameTime = System.currentTimeMillis();
+    
 
     @Override
     public void onCameraFrame(Bitmap bitmap, long timestamp) {
+
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       // bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
       bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
       byte[] bytes = outputStream.toByteArray();
 
+      PyObject result = markerDetectionFunction.call(bytes);
+      bytes = result.toJava(byte[].class);
       
       // To Test the frame rate
       // int staticValue = 42; 
