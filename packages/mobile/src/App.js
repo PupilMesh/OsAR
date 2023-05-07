@@ -7,12 +7,12 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Scene, StandardMaterial, UniversalCamera, Vector3 } from '@babylonjs/core';
 import { StatusBar, View, Text, Platform, NativeEventEmitter, NativeModules, Image } from 'react-native';
-import GLRenderer from './components/GLRenderer';
 import useStyles from './styles';
 import { accelerometer, gyroscope, setUpdateIntervalForType, SensorTypes } from "react-native-sensors";
 import { useState } from 'react';
 import { LogBox } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import BabylonScene from './components/BabylonFunctions/BabylonScene';
 
 LogBox.ignoreLogs([
   'Require cycle:',
@@ -72,45 +72,6 @@ export default function App() {
     };
   }, []);
 
-  const onCreateEngine = useCallback((engine) => {
-    if (!engine) return;
-
-    const scene = new Scene(engine);
-
-    scene.clearColor = Color4.FromHexString(`#000000`);
-
-    const camera = new UniversalCamera('camera', new Vector3(0, 3, -5), scene);
-    camera.setTarget(Vector3.Zero());
-
-    const subscription = gyroscope.subscribe(
-      ({ x, y, z }) => {
-        camera.rotation.set(x * 0.1, y * 0.1, z * 0.1);
-      },
-      error => {
-        console.log("The sensor is not available");
-      }
-    );
-
-    const light = new HemisphericLight('HemiLight', new Vector3(0, 9, -5), scene);
-
-    const box = MeshBuilder.CreateBox('Cube', { size: 1 });
-    const boxMaterial = new StandardMaterial('CubeMaterial', scene);
-    boxMaterial.diffuseColor = Color3.FromHexString('#0081fe');
-    box.material = boxMaterial;
-
-box.position.set(0, 0, 0);
-box.addRotation(0.1, 0.5, 0);
-
-engine.runRenderLoop(function () {
-  if (scene && scene.activeCamera) scene.render();
-});
-
-return () => {
-  scene.dispose();
-  camera.dispose();
-  engine.dispose();
-};
-}, []);
 
 const styles = useStyles();
 
@@ -125,8 +86,8 @@ return (
   }}
 >
   <StatusBar backgroundColor={'black'} />
-  <GLRenderer onCreateEngine={onCreateEngine} />
-  <View style={styles.Overlay_Root}>
+  <BabylonScene/>
+    <View style={styles.Overlay_Root}>
     {imageUris.map((uri, index) => (
       visibleFrames[index] && (
         <FastImage

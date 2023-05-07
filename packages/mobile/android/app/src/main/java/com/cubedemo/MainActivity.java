@@ -1,13 +1,14 @@
 package com.cubedemo;
 
 
-// import com.chaquo.python.PyObject;
-// import com.chaquo.python.Python;
-// import com.chaquo.python.android.AndroidPlatform;
+import com.chaquo.python.PyObject;
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.os.Bundle;
 
@@ -33,19 +34,19 @@ public class MainActivity extends ReactActivity {
   boolean hasCameraPermission = false;
   ManageExternalCamera externalCamera;
 
-  // private Python py;
-  // private PyObject markerDetectionFunction;
+  private Python py;
+  private PyObject markerDetectionFunction;
 
-  // @Override
-  // protected void onCreate(Bundle savedInstanceState) {
-  //   super.onCreate(savedInstanceState);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-  //   if (!Python.isStarted()) {
-  //     Python.start(new AndroidPlatform(this));
-  //   }
-  // py=Python.getInstance();
-  // markerDetectionFunction=py.getModule("image_process").get("detect_marker");
-  // }
+    if (!Python.isStarted()) {
+      Python.start(new AndroidPlatform(this));
+    }
+  py=Python.getInstance();
+  markerDetectionFunction=py.getModule("image_process").get("detect_marker");
+  }
 
   @Override
   protected void onStart() {
@@ -63,12 +64,17 @@ public class MainActivity extends ReactActivity {
     public void onCameraFrame(Bitmap bitmap, long timestamp) {
 
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      // bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
       bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
       byte[] bytes = outputStream.toByteArray();
 
-      // PyObject result = markerDetectionFunction.call(bytes);
-      // bytes = result.toJava(byte[].class);
+      PyObject result = markerDetectionFunction.call(bytes);
+      bytes = result.toJava(byte[].class);
+      // Bitmap resultBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+      // // Compress the Bitmap
+      // ByteArrayOutputStream compressedOutputStream = new ByteArrayOutputStream();
+      // resultBitmap.compress(Bitmap.CompressFormat.JPEG, 50, compressedOutputStream);
+      // bytes = compressedOutputStream.toByteArray();
 
       // To Test the frame rate
       // int staticValue = 42; 
