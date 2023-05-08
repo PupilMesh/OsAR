@@ -28,12 +28,17 @@ export default function App() {
   const [visibleFrames, setVisibleFrames] = useState(Array(BUFFER_SIZE).fill(false));
   const [frameCount, setFrameCount] = useState(0);
   const [fps, setFps] = useState(0);
+  const [debug, setDebug] = useState("0");
+
   const currentFrame = useRef(0);
   let lastUpdateTime = Date.now();
 
   useEffect(() => {
     const subscription = cameraEmitter.addListener('cameraFrame', event => {
-      const url = 'data:image/jpeg;base64,' + event;
+      event = JSON.parse(event)
+      const { detected_markers, image } = event;
+      // setDebug(image)
+      const url = 'data:image/jpeg;base64,' + image;
       setImageUris(prevUris => {
         const updatedUris = [...prevUris];
         updatedUris[currentFrame.current] = url;
@@ -97,6 +102,7 @@ return (
             priority: FastImage.priority.high,
           }}
           style={styles.image}
+          resizeMode="cover" // This prop to ensure the image scales properly
         />
       )
     ))}
@@ -107,6 +113,9 @@ return (
     <Text numberOfLines={0} allowFontScaling={false} style={styles.Overlay_Text}>
       {"FPS : " + fps}
     </Text>
+    {/* <Text numberOfLines={0} allowFontScaling={false} style={styles.Overlay_Text}>
+      {debug}
+    </Text> */}
   </View>
 </View>
 );

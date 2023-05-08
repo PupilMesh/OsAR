@@ -22,9 +22,12 @@ const useStyles = () => {
       paddingVertical: 5,
     },
     image: {
-      position:'absolute',
+      position: 'absolute',
+      top: 0,
+      left: 0,
       width: 400,
       height: 400,
+      backgroundColor: 'rgba(0, 0, 0, 0.9)', // Set the transparency to 50%
     },
   });
 };

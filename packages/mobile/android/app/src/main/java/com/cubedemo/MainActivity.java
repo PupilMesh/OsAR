@@ -68,7 +68,9 @@ public class MainActivity extends ReactActivity {
       byte[] bytes = outputStream.toByteArray();
 
       PyObject result = markerDetectionFunction.call(bytes);
-      bytes = result.toJava(byte[].class);
+      String jsonString = result.toString();
+
+      // bytes = result.toJava(byte[].class);
       // Bitmap resultBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
       // // Compress the Bitmap
@@ -83,7 +85,7 @@ public class MainActivity extends ReactActivity {
       // byte[] bytes = new byte[byteArraySize];
       // Arrays.fill(bytes, (byte) staticValue);
 
-      CameraFrameModule.sendCameraFrame(bytes);
+      CameraFrameModule.sendCameraFrame(jsonString);
     }
 
     @Override

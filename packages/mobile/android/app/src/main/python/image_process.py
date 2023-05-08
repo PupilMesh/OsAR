@@ -2,7 +2,8 @@ import cv2
 import numpy as np
 import os
 import urllib.request
-
+import base64
+import json
 
 def download_image(url):
     resp = urllib.request.urlopen(url)
@@ -10,11 +11,13 @@ def download_image(url):
     image = cv2.imdecode(image, cv2.IMREAD_GRAYSCALE)
     return image
 
+
 def find_images_in_image(img, smaller_images, ratio_threshold=0.7):
     akaze = cv2.AKAZE_create()
     kp1, des1 = akaze.detectAndCompute(img, None)
 
     img_bgr = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    detected_markers = []
 
     for name, (template, kp2, des2) in smaller_images.items():
         bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
@@ -26,6 +29,7 @@ def find_images_in_image(img, smaller_images, ratio_threshold=0.7):
                 good_matches.append(m)
 
         if len(good_matches) > 5:
+            detected_markers.append(name)
             src_pts = np.float32([kp1[m.queryIdx].pt for m in good_matches]).reshape(-1, 1, 2)
             dst_pts = np.float32([kp2[m.trainIdx].pt for m in good_matches]).reshape(-1, 1, 2)
 
@@ -35,19 +39,18 @@ def find_images_in_image(img, smaller_images, ratio_threshold=0.7):
             points = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
             dst = cv2.perspectiveTransform(points, M)
 
-            # Draw the bounding polygon and the marker name on the larger image
             img_bgr = cv2.polylines(img_bgr, [np.int32(dst)], True, (0, 255, 0), 3, cv2.LINE_AA)
             img_bgr = cv2.putText(img_bgr, name, tuple(np.int32(dst[0][0])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
 
-    return img_bgr
+    # retval, buffer = cv2.imencode('.jpg', img_bgr)
+    # image_bytes = np.array(buffer).tobytes()
+    # return {"detected_markers": detected_markers, "image": image_bytes}
+    retval, buffer = cv2.imencode('.jpeg', img_bgr)
+    img_base64 = base64.b64encode(buffer).decode('utf-8')
+    result = {"detected_markers": detected_markers, "image": img_base64}
+    result_json_string = json.dumps(result)
+    return result_json_string
 
-# Initialize the USB camera
-cap = cv2.VideoCapture(cv2.CAP_DSHOW + 1)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-cap.set(cv2.CAP_PROP_FPS, 30)
-cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-cap.set(cv2.CAP_PROP_CONVERT_RGB, 1)
 
 akaze = cv2.AKAZE_create()
 curr_dir= os.getcwd()
@@ -73,13 +76,5 @@ def detect_marker(image_bytes):
 
     # Find the smaller images in the captured frame
     result = find_images_in_image(gray_frame, smaller_images)
-
-    if result is not None:
-        # encode the image as a ByteArray using cv2.imencode()
-        retval, buffer = cv2.imencode('.png', result)
-        image_bytes = np.array(buffer).tobytes()
-        return image_bytes
-    else:
-        return image_bytes
     
-
+    return result
