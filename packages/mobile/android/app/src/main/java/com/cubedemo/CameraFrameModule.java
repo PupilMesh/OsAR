@@ -52,10 +52,10 @@ public class CameraFrameModule extends ReactContextBaseJavaModule {
     // }
     
 
-  static  public void sendCameraFrame(byte[] frame) {
-        String data = Base64.encodeToString(frame,Base64.DEFAULT);
+  static  public void sendCameraFrame(String frame) {
+        // String data = Base64.encodeToString(frame,Base64.DEFAULT);
         context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit("cameraFrame", data);
+                .emit("cameraFrame", frame);
     }
     @ReactMethod
     public void addListener(String eventName) {
