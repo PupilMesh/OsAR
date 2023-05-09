@@ -1,5 +1,6 @@
 # Precompute
 
+
 Precompute is a Python application that detects and recognizes smaller images within a larger image captured from a USB camera. It uses the AKAZE feature detector and descriptor for image matching and the Brute-Force Matcher for finding correspondences between features. Detected smaller images are highlighted with a bounding polygon and labeled with their respective names.
 
 ## Getting Started
