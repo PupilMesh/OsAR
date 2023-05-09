@@ -1,8 +1,10 @@
-import {StyleSheet, Platform} from 'react-native';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
 import useUnits from 'rxn-units';
 
 const useStyles = () => {
   const { vmin } = useUnits();
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
   return StyleSheet.create({
     Overlay_Root: {
@@ -25,9 +27,9 @@ const useStyles = () => {
       position: 'absolute',
       top: 0,
       left: 0,
-      width: 400,
-      height: 400,
-      backgroundColor: 'rgba(0, 0, 0, 0.9)', // Set the transparency to 50%
+      width: screenWidth,
+      height: screenHeight,
+      opacity: 0.5,
     },
   });
 };
