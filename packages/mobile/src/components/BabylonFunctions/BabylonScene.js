@@ -5,13 +5,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 
-import React, { useCallback } from 'react';
+import React, { useCallback,useState,useEffect } from 'react';
 import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Scene, StandardMaterial, UniversalCamera, Vector3 } from '@babylonjs/core';
 import GLRenderer from '../GLRenderer';
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import "@babylonjs/loaders/glTF";
 
 export default function BabylonScene() {
+  const [modelUrls, setModelUrls] = useState([]);
+
+  useEffect(() => {
+    // Here you can handle your events
+    // For example, when some event happens, you can set the modelUrls
+    // setModelUrls(["https://urlToYourModel1.glb", "https://urlToYourModel2.glb"]);
+    setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683485043/2CylinderEngine_lfapqb.glb"]);
+
+  }, []); // Put your dependencies here
 
   const onCreateEngine = useCallback((engine) => {
     if (!engine) return;
@@ -25,22 +34,21 @@ export default function BabylonScene() {
 
     const light = new HemisphericLight('HemiLight', new Vector3(0, 9, -5), scene);
 
+    modelUrls.forEach(modelUrl => {
+      SceneLoader.ImportMesh("", modelUrl, "", scene, function (newMeshes) {
+        const root = newMeshes[0];
+        root.position.set(0, 0, 0);
+        root.scaling = new Vector3(0.001, 0.001, 0.001); // Adjust the scaling if needed
 
-  const modelUrl = "https://res.cloudinary.com/doblnhena/image/upload/v1683485043/2CylinderEngine_lfapqb.glb"; // Replace with your glb file path
-  SceneLoader.ImportMesh("", modelUrl, "", scene, function (newMeshes) {
-    const root = newMeshes[0];
-    root.position.set(0, 0, 0);
-    root.scaling = new Vector3(0.001, 0.001, 0.001); // Adjust the scaling if needed
+        // Set the rotation speed (in radians per frame)
+        const rotationSpeed = 0.01;
 
-    // Set the rotation speed (in radians per frame)
-    const rotationSpeed = 1;
-
-    // Rotate the mesh in the registerBeforeRender function
-    scene.registerBeforeRender(() => {
-      root.rotation.y += rotationSpeed;
+        // Rotate the mesh in the registerBeforeRender function
+        scene.registerBeforeRender(() => {
+          root.rotation.y += rotationSpeed;
+        });
+      });
     });
-  });
-
 
     engine.runRenderLoop(function () {
       if (scene && scene.activeCamera) scene.render();
@@ -51,11 +59,11 @@ export default function BabylonScene() {
       camera.dispose();
       engine.dispose();
     };
-  }, []);
+  }, [modelUrls]); // modelUrls is a dependency now
 
   return (
     <>
       <GLRenderer onCreateEngine={onCreateEngine} />
     </>
-)
+  )
 }
