@@ -1,153 +1,40 @@
-import cv2 as cv
+import cv2
 import os
-import numpy as np
-import pickle
 
-from bundle_adjustment import bundle_adjustment
-from plot_utils import viz_3d, viz_3d_matplotlib, draw_epipolar_lines
+from utils import *
 
-######################### Path Variables ##################################################
-curr_dir_path = os.getcwd()
-images_dir = curr_dir_path + '/data/images/'
-calibration_file_dir = curr_dir_path + '/data/calibration/'
-###########################################################################################
+imDIR = './data/images/'
+limiter = 1200 # number of matches. cv2 errors out if I utilize more than 1200. Why ??
+imgs = os.listdir(imDIR)
+imSEQ = list(zip(imgs, imgs[1:]))
+pts_3d = []
 
-def get_camera_intrinsic_params():
-    with open(calibration_file_dir + 'cameraMatrix.pkl', 'rb') as f:
-        camMtx = pickle.load(f)
-        return camMtx.tolist()
+camMtx = retCamMtx("./data/calibration/cameraMatrix.pkl")
+nCamMtx = retCamMtx("./data/calibration/newCameraMatrix.pkl")
+distCoeff = retDistCoeff("./data/calibration/dist.pkl")
 
-def get_pinhole_intrinsic_params():
-    with open(calibration_file_dir + 'cameraMatrix.pkl', 'rb') as f:
-        camMtx = pickle.load(f)
-        return camMtx.tolist()
+for i in imSEQ:
+    img1 = readIm(f'{imDIR}{i[0]}')
+    img2 = readIm(f'{imDIR}{i[1]}')
+    img1 = retUndistortedIm(img1, camMtx, nCamMtx, distCoeff)
+    img2 = retUndistortedIm(img2, camMtx, nCamMtx, distCoeff)
 
-def rep_error_fn(opt_variables, points_2d, num_pts):
-    P = opt_variables[0:12].reshape(3,4)
-    point_3d = opt_variables[12:].reshape((num_pts, 4))
+    kp1, des1, kp2, des2 = ORB_detector(img1, img2, limiter)
+    # kp1, des1, kp2, des2 = BRISK_detector(img1, img2)
+    kpL1 = retKpList(kp1)
+    kpL2 = retKpList(kp2)
+    numMatches = bruteForceMatcher(des1, des2)
 
-    rep_error = []
+    essMtx, _ = retEssentialMat(kpL1, kpL2, camMtx, distCoeff)
+    _, R, t, mask = retPoseRecovery(essMtx, kpL1, kpL2)
+    pts_3d.extend(retTriangulation(R, t, kpL1, kpL2, limiter))
+    # print(f'{pts_3d}')
+    display2D(img1, kp1, img2, kp2, numMatches)
+    cv2.waitKey(1)
 
-    for idx, pt_3d in enumerate(point_3d):
-        pt_2d = np.array([points_2d[0][idx], points_2d[1][idx]])
+# FIXME: almost no depth in the images, might be caused
+# FIXME: by incorrect calibration matrix.
+display3D(pts_3d)
 
-        reprojected_pt = np.matmul(P, pt_3d)
-        reprojected_pt /= reprojected_pt[2]
+cv2.destroyAllWindows()
 
-        print("Reprojection Error \n" + str(pt_2d - reprojected_pt[0:2]))
-        rep_error.append(pt_2d - reprojected_pt[0:2])
-
-current_iter = 0
-prev_img = None
-prev_kp = None
-prev_desc = None
-
-capture = cv.VideoCapture(1)
-
-while __name__ == "__main__":
-    # Variables 
-    
-    K = np.array(get_pinhole_intrinsic_params(), dtype=np.float)
-    R_t_0 = np.array([[1,0,0,0], [0,1,0,0], [0,0,1,0]])
-    R_t_1 = np.empty((3,4))
-    P1 = np.matmul(K, R_t_0)
-    P2 = np.empty((3,4))
-    pts_4d = []
-    X = np.array([])
-    Y = np.array([])
-    Z = np.array([])
-
-    ret, img = capture.read()
-
-    resized_img = img
-    sift = cv.xfeatures2d.SIFT_create()
-    kp, desc = sift.detectAndCompute(resized_img,None)
-    
-    if current_iter == 0:
-        prev_img = resized_img
-        prev_kp = kp
-        prev_desc = desc
-    else:
-        # FLANN parameters
-        FLANN_INDEX_KDTREE = 1
-        index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
-        search_params = dict(checks=100)
-        flann = cv.FlannBasedMatcher(index_params,search_params)
-        matches = flann.knnMatch(prev_desc,desc,k=2)
-        print(prev_img)
-        good = []
-        pts1 = []
-        pts2 = []
-        # ratio test as per Lowe's paper
-        for i,(m,n) in enumerate(matches):
-            if m.distance < 0.7*n.distance:
-                good.append(m)
-                pts1.append(prev_kp[m.queryIdx].pt)
-                pts2.append(kp[m.trainIdx].pt)
-                
-        pts1 = np.array(pts1)
-        pts2 = np.array(pts2)
-        F, mask = cv.findFundamentalMat(pts1,pts2,cv.FM_RANSAC)
-        print("The fundamental matrix \n" + str(F))
-
-        # We select only inlier points
-        pts1 = pts1[mask.ravel()==1]
-        pts2 = pts2[mask.ravel()==1]
-
-        #draw_epipolar_lines(pts1, pts2, prev_img, resized_img)
-
-        E = np.matmul(np.matmul(np.transpose(K), F), K)
-
-        print("The new essential matrix is \n" + str(E))
-
-        retval, R, t, mask = cv.recoverPose(E, pts1, pts2, K)
-        
-        print("I+0 \n" + str(R_t_0))
-
-        print("Mullllllllllllll \n" + str(np.matmul(R, R_t_0[:3,:3])))
-
-        R_t_1[:3,:3] = np.matmul(R, R_t_0[:3,:3])
-        R_t_1[:3, 3] = R_t_0[:3, 3] + np.matmul(R_t_0[:3,:3],t.ravel())
-
-        print("The R_t_0 \n" + str(R_t_0))
-        print("The R_t_1 \n" + str(R_t_1))
-
-        P2 = np.matmul(K, R_t_1)
-
-        print("The projection matrix 1 \n" + str(P1))
-        print("The projection matrix 2 \n" + str(P2))
-
-        pts1 = np.transpose(pts1)
-        pts2 = np.transpose(pts2)
-
-        print("Shape pts 1\n" + str(pts1.shape))
-
-        points_3d = cv.triangulatePoints(P1, P2, pts1, pts2)
-        points_3d /= points_3d[3]
-
-        # P2, points_3D = bundle_adjustment(points_3d, pts2, resized_img, P2)
-        opt_variables = np.hstack((P2.ravel(), points_3d.ravel(order="F")))
-        num_points = len(pts2[0])
-        rep_error_fn(opt_variables, pts2, num_points)
-
-        X = np.concatenate((X, points_3d[0]))
-        Y = np.concatenate((Y, points_3d[1]))
-        Z = np.concatenate((Z, points_3d[2]))
-
-        R_t_0 = np.copy(R_t_1)
-        P1 = np.copy(P2)
-        prev_img = resized_img
-        prev_kp = kp
-        prev_desc = desc
-
-    current_iter = current_iter + 1
-
-    pts_4d.append(X)
-    pts_4d.append(Y)
-    pts_4d.append(Z)
-
-    cv.imshow('Video', img)
-
-    if cv.waitKey(1) == 27:
-        break
-viz_3d(np.array(pts_4d))
