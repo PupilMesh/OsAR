@@ -47,12 +47,33 @@ export default function App() {
       event = JSON.parse(event)
       const { detected_markers, image } = event;
       setDebug(detected_markers[0])
+      // if (detected_markers[0] == "image1") {
+      //       setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",...modelUrls]);
+      // } else if (detected_markers[0] == "image2") {
+      //       setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895925/model3_ufinmb.glb",...modelUrls]);
+      // }
       if (detected_markers[0] == "image1") {
-            setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",...modelUrls]);
-      } else if (detected_markers[1] == "image2") {
-            setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895925/model3_ufinmb.glb",...modelUrls]);
+        const newUrl = "https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb";
+        setModelUrls(prevUrls => {
+          if (!prevUrls.includes(newUrl)) {
+            const newUrls = [newUrl,...prevUrls];
+            if (newUrls.length > 5) newUrls.pop(); // keep only the last 5 URLs
+            return newUrls;
+          }
+          return prevUrls; // return the previous state if the URL is already in the array
+        });
+      } else if (detected_markers[0] == "image2") {
+        const newUrl = "https://res.cloudinary.com/doblnhena/image/upload/v1683895925/model3_ufinmb.glb";
+        setModelUrls(prevUrls => {
+          if (!prevUrls.includes(newUrl)) {
+            const newUrls = [newUrl,...prevUrls];
+            if (newUrls.length > 5) newUrls.pop(); // keep only the last 5 URLs
+            return newUrls;
+          }
+          return prevUrls; // return the previous state if the URL is already in the array
+        });
       }
-      
+
       const url = 'data:image/jpeg;base64,' + image;
       setImageUris(prevUris => {
         const updatedUris = [...prevUris];
