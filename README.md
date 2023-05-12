@@ -5,9 +5,10 @@ OSAR is an open source Augmented Reality SDK designed for plug and play compatib
 
 #### TODO
 
-- [ ] Allow 3D loading / marker from local storage
+- [ ] Allow 3D loading of model / marker from local storage
 - [ ] Write function to map with camera
-- [ ] Load model from JSON
+- [ ] Load model from JSON in python and in App.js
+- [ ] Set model parameters such as scale, position from JSOn
 
 
 ### Getting Started
