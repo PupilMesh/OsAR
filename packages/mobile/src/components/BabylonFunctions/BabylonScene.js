@@ -11,16 +11,8 @@ import GLRenderer from '../GLRenderer';
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import "@babylonjs/loaders/glTF";
 
-export default function BabylonScene() {
-  const [modelUrls, setModelUrls] = useState([]);
-
-  useEffect(() => {
-    // Here you can handle your events
-    // For example, when some event happens, you can set the modelUrls
-    // setModelUrls(["https://urlToYourModel1.glb", "https://urlToYourModel2.glb"]);
-    setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683485043/2CylinderEngine_lfapqb.glb"]);
-
-  }, []); // Put your dependencies here
+// eslint-disable-next-line react/prop-types
+export default function BabylonScene({modelUrls}) {
 
   const onCreateEngine = useCallback((engine) => {
     if (!engine) return;
@@ -34,11 +26,12 @@ export default function BabylonScene() {
 
     const light = new HemisphericLight('HemiLight', new Vector3(0, 9, -5), scene);
 
+    // eslint-disable-next-line react/prop-types
     modelUrls.forEach(modelUrl => {
       SceneLoader.ImportMesh("", modelUrl, "", scene, function (newMeshes) {
         const root = newMeshes[0];
         root.position.set(0, 0, 0);
-        root.scaling = new Vector3(0.001, 0.001, 0.001); // Adjust the scaling if needed
+        root.scaling = new Vector3(0.4, 0.4, 0.4); // Adjust the scaling if needed
 
         // Set the rotation speed (in radians per frame)
         const rotationSpeed = 0.01;

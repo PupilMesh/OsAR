@@ -29,7 +29,7 @@ const screenHeight = Dimensions.get('window').height;
       left: 0,
       width: screenWidth,
       height: screenHeight,
-      opacity: 0.5,
+      opacity: 0.05,
     },
   });
 };

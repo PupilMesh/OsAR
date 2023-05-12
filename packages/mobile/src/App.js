@@ -29,6 +29,15 @@ export default function App() {
   const [frameCount, setFrameCount] = useState(0);
   const [fps, setFps] = useState(0);
   const [debug, setDebug] = useState("0");
+  const [modelUrls, setModelUrls] = useState([]);
+
+  // useEffect(() => {
+  //   // Here you can handle your events
+  //   // For example, when some event happens, you can set the modelUrls
+  //   // setModelUrls(["https://urlToYourModel1.glb", "https://urlToYourModel2.glb"]);
+  //   setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb"]);
+
+  // }, []); // Put your dependencies here
 
   const currentFrame = useRef(0);
   let lastUpdateTime = Date.now();
@@ -37,7 +46,13 @@ export default function App() {
     const subscription = cameraEmitter.addListener('cameraFrame', event => {
       event = JSON.parse(event)
       const { detected_markers, image } = event;
-      // setDebug(image)
+      setDebug(detected_markers[0])
+      if (detected_markers[0] == "image1") {
+            setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",...modelUrls]);
+      } else if (detected_markers[1] == "image2") {
+            setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895925/model3_ufinmb.glb",...modelUrls]);
+      }
+      
       const url = 'data:image/jpeg;base64,' + image;
       setImageUris(prevUris => {
         const updatedUris = [...prevUris];
@@ -91,7 +106,7 @@ return (
   }}
 >
   <StatusBar backgroundColor={'black'} />
-  <BabylonScene/>
+  <BabylonScene modelUrls={modelUrls}/>
     <View style={styles.Overlay_Root}>
     {imageUris.map((uri, index) => (
       visibleFrames[index] && (
@@ -113,9 +128,9 @@ return (
     <Text numberOfLines={0} allowFontScaling={false} style={styles.Overlay_Text}>
       {"FPS : " + fps}
     </Text>
-    {/* <Text numberOfLines={0} allowFontScaling={false} style={styles.Overlay_Text}>
+    <Text numberOfLines={0} allowFontScaling={false} style={styles.Overlay_Text}>
       {debug}
-    </Text> */}
+    </Text>
   </View>
 </View>
 );
