@@ -31,13 +31,14 @@ export default function App() {
   const [debug, setDebug] = useState("0");
   const [modelUrls, setModelUrls] = useState([]);
 
-  // useEffect(() => {
-  //   // Here you can handle your events
-  //   // For example, when some event happens, you can set the modelUrls
-  //   // setModelUrls(["https://urlToYourModel1.glb", "https://urlToYourModel2.glb"]);
-  //   setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb"]);
+  
+  useEffect(() => {
+    // Here you can handle your events
+    // For example, when some event happens, you can set the modelUrls
+    // setModelUrls(["https://urlToYourModel1.glb", "https://urlToYourModel2.glb"]);
+    setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb"]);
 
-  // }, []); // Put your dependencies here
+  }, []); // Put your dependencies here
 
   const currentFrame = useRef(0);
   let lastUpdateTime = Date.now();
