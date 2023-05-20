@@ -14,6 +14,8 @@ import { LogBox } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import BabylonScene from './components/BabylonFunctions/BabylonScene';
 
+
+
 LogBox.ignoreLogs([
   'Require cycle:',
 ]);
@@ -47,7 +49,7 @@ export default function App() {
     const subscription = cameraEmitter.addListener('cameraFrame', event => {
       event = JSON.parse(event)
       const { detected_markers, image } = event;
-      setDebug(detected_markers[0])
+      // setDebug(detected_markers[0])
       // if (detected_markers[0] == "image1") {
       //       setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",...modelUrls]);
       // } else if (detected_markers[0] == "image2") {
@@ -97,6 +99,8 @@ export default function App() {
 
       currentFrame.current = (currentFrame.current + 1) % BUFFER_SIZE;
     });
+
+ 
 
     setUpdateIntervalForType(SensorTypes.gyroscope, 50);
       const intervalId = setInterval(() => {
