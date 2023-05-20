@@ -6,24 +6,36 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import React, { useCallback, useState, useEffect } from 'react';
-import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Quaternion, Scene, StandardMaterial, UniversalCamera, Vector3, PhotoDome } from '@babylonjs/core';
+import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Quaternion, Scene, StandardMaterial, UniversalCamera, Vector3, PhotoDome, Vector4 } from '@babylonjs/core';
 import GLRenderer from '../GLRenderer';
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import "@babylonjs/loaders/glTF";
 import { gyroscope } from 'react-native-sensors';
+import { StatusBar, View, Text, Platform, NativeEventEmitter, NativeModules, Image } from 'react-native';
+const Imu  = NativeModules.Imu;
+const imuEmitter = new NativeEventEmitter(Imu);
 
 export default function BabylonScene({modelUrls}) {
   const [camera, setCamera] = useState(null);
 
   useEffect(() => {
-    const subscription = gyroscope.subscribe(({ x, y, z }) => {
-      if(camera) {
-        camera.rotation = new Vector3(x, y, z);
+    // const subscription = gyroscope.subscribe(({ x, y, z }) => {
+    //   if(camera) {
+    //     camera.rotation = new Vector3(x, y, z);
+    //   }
+    // });
+
+  imuEmitter.addListener('Imu', (event) => {
+      let array = event.split(",")
+    if (camera) {
+        const quaternion = new Quaternion(parseFloat(array[0]),parseFloat(array[1]),parseFloat(array[2]),parseFloat(array[3])); // use the values from the rotation vector sensor
+        const euler = quaternion.toEulerAngles();    
+        camera.rotation = euler;  
       }
     });
 
     return () => {
-      subscription.unsubscribe();
+      // subscription.unsubscribe();
     }
   }, [camera]);
 

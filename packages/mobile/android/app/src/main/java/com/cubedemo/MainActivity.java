@@ -11,6 +11,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.os.Bundle;
+import android.util.Log;
+
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -39,8 +41,9 @@ public class MainActivity extends ReactActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    
     super.onCreate(savedInstanceState);
-
+    Log.i(TAG, "On create called");
     if (!Python.isStarted()) {
       Python.start(new AndroidPlatform(this));
     }
