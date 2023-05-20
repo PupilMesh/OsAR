@@ -5,28 +5,27 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-
 import React, { useCallback, useState, useEffect } from 'react';
-import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Quaternion, Scene, StandardMaterial, UniversalCamera, Vector3 } from '@babylonjs/core';
+import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Quaternion, Scene, StandardMaterial, UniversalCamera, Vector3, PhotoDome } from '@babylonjs/core';
 import GLRenderer from '../GLRenderer';
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import "@babylonjs/loaders/glTF";
 import { gyroscope } from 'react-native-sensors';
 
 export default function BabylonScene({modelUrls}) {
-  const [rootMesh, setRootMesh] = useState(null);
+  const [camera, setCamera] = useState(null);
 
   useEffect(() => {
     const subscription = gyroscope.subscribe(({ x, y, z }) => {
-      if(rootMesh) {
-        rootMesh.rotationQuaternion = Quaternion.RotationYawPitchRoll(y, x, z);
+      if(camera) {
+        camera.rotation = new Vector3(x, y, z);
       }
     });
 
     return () => {
       subscription.unsubscribe();
     }
-  }, [rootMesh]);
+  }, [camera]);
 
   const onCreateEngine = useCallback((engine) => {
     if (!engine) return;
@@ -37,15 +36,23 @@ export default function BabylonScene({modelUrls}) {
 
     const camera = new UniversalCamera('camera', new Vector3(0, 3, -5), scene);
     camera.setTarget(Vector3.Zero());
+    setCamera(camera);
 
     const light = new HemisphericLight('HemiLight', new Vector3(0, 9, -5), scene);
-
+    var dome = new PhotoDome(
+        "testdome",
+        "https://res.cloudinary.com/doblnhena/image/upload/v1684415267/360photo_mjy98u.jpg",
+        {
+            resolution: 32,
+            size: 1000
+        },
+        scene
+    );
     modelUrls.forEach(modelUrl => {
       SceneLoader.ImportMesh("", modelUrl, "", scene, function (newMeshes) {
         const root = newMeshes[0];
         root.position.set(0, -10, 10);
         root.scaling = new Vector3(0.8, 0.8, 0.8); // Adjust the scaling if needed
-        setRootMesh(root);
       });
     });
 
@@ -66,3 +73,7 @@ export default function BabylonScene({modelUrls}) {
     </>
   )
 }
+
+
+
+
