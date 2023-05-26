@@ -38,7 +38,9 @@ export default function App() {
   setModelUrls([{
     modelUrl: "https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",
     scale: [0.8, 0.8, 0.8],
-    position: [0, -10, 10]
+    position: [0, -10, 10],
+    rotation: [0, 0, 0] // replace with your desired rotation
+
   }]);
 }, []); // Put your dependencies here
 
@@ -59,7 +61,9 @@ export default function App() {
         const newModel = {
           modelUrl: "https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",
           scale: [0.8, 0.8, 0.8],
-          position: [0, -10, 10]
+          position: [0, -10, 10],
+          rotation: [0, 0, 0] // replace with your desired rotation
+
         };
         setModelUrls(prevModels => {
           if (!prevModels.find(model => model.modelUrl === newModel.modelUrl)) {
@@ -73,7 +77,9 @@ export default function App() {
         const newModel = {
           modelUrl: "https://res.cloudinary.com/doblnhena/image/upload/v1683895925/model3_ufinmb.glb",
           scale: [0.8, 0.8, 0.8],
-          position: [0, -10, 10]
+          position: [0, -10, 10],
+          rotation: [0, 0, 0] // replace with your desired rotation
+
         };
         setModelUrls(prevModels => {
           if (!prevModels.find(model => model.modelUrl === newModel.modelUrl)) {

@@ -54,13 +54,13 @@ export default function BabylonScene({modelUrls}) {
         scene
     );
     modelUrls.forEach(model => {
-      SceneLoader.ImportMesh("", model.modelUrl, "", scene, function (newMeshes) {
-        const root = newMeshes[0];
-        root.position.set(model.position[0], model.position[1], model.position[2]); 
-        root.scaling = new Vector3(model.scale[0], model.scale[1], model.scale[2]); 
-      });
+    SceneLoader.ImportMesh("", model.modelUrl, "", scene, function (newMeshes) {
+      const root = newMeshes[0];
+      root.position.set(model.position[0], model.position[1], model.position[2]); 
+      root.scaling = new Vector3(model.scale[0], model.scale[1], model.scale[2]); 
+      root.rotationQuaternion = Quaternion.FromEulerAngles(model.rotation[0], model.rotation[1], model.rotation[2]);
     });
-
+});
     engine.runRenderLoop(function () {
       if (scene && scene.activeCamera) scene.render();
     });
