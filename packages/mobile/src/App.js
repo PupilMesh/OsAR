@@ -35,12 +35,12 @@ export default function App() {
 
   
   useEffect(() => {
-    // Here you can handle your events
-    // For example, when some event happens, you can set the modelUrls
-    // setModelUrls(["https://urlToYourModel1.glb", "https://urlToYourModel2.glb"]);
-    setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb"]);
-
-  }, []); // Put your dependencies here
+  setModelUrls([{
+    modelUrl: "https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",
+    scale: [0.8, 0.8, 0.8],
+    position: [0, -10, 10]
+  }]);
+}, []); // Put your dependencies here
 
   const currentFrame = useRef(0);
   let lastUpdateTime = Date.now();
@@ -56,26 +56,35 @@ export default function App() {
       //       setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895925/model3_ufinmb.glb",...modelUrls]);
       // }
       if (detected_markers[0] == "image1") {
-        const newUrl = "https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb";
-        setModelUrls(prevUrls => {
-          if (!prevUrls.includes(newUrl)) {
-            const newUrls = [newUrl,...prevUrls];
-            if (newUrls.length > 5) newUrls.pop(); // keep only the last 5 URLs
-            return newUrls;
+        const newModel = {
+          modelUrl: "https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",
+          scale: [0.8, 0.8, 0.8],
+          position: [0, -10, 10]
+        };
+        setModelUrls(prevModels => {
+          if (!prevModels.find(model => model.modelUrl === newModel.modelUrl)) {
+            const newModels = [newModel,...prevModels];
+            if (newModels.length > 5) newModels.pop(); // keep only the last 5 models
+            return newModels;
           }
-          return prevUrls; // return the previous state if the URL is already in the array
+          return prevModels; // return the previous state if the model is already in the array
         });
       } else if (detected_markers[0] == "image2") {
-        const newUrl = "https://res.cloudinary.com/doblnhena/image/upload/v1683895925/model3_ufinmb.glb";
-        setModelUrls(prevUrls => {
-          if (!prevUrls.includes(newUrl)) {
-            const newUrls = [newUrl,...prevUrls];
-            if (newUrls.length > 5) newUrls.pop(); // keep only the last 5 URLs
-            return newUrls;
+        const newModel = {
+          modelUrl: "https://res.cloudinary.com/doblnhena/image/upload/v1683895925/model3_ufinmb.glb",
+          scale: [0.8, 0.8, 0.8],
+          position: [0, -10, 10]
+        };
+        setModelUrls(prevModels => {
+          if (!prevModels.find(model => model.modelUrl === newModel.modelUrl)) {
+            const newModels = [newModel,...prevModels];
+            if (newModels.length > 5) newModels.pop(); // keep only the last 5 models
+            return newModels;
           }
-          return prevUrls; // return the previous state if the URL is already in the array
+          return prevModels; // return the previous state if the model is already in the array
         });
       }
+
 
       const url = 'data:image/jpeg;base64,' + image;
       setImageUris(prevUris => {
