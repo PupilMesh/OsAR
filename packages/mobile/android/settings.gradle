@@ -3,6 +3,8 @@ apply from: file("../node_modules/@react-native-community/cli-platform-android/n
 include ':app'
 include ':libuvccamera'
 includeBuild('../node_modules/react-native-gradle-plugin')
+include ':opencv'
+project(':opencv').projectDir = new File('opencv')
 
 if (settings.hasProperty("newArchEnabled") && settings.newArchEnabled == "true") {
     include(":ReactAndroid")

@@ -26,6 +26,8 @@ buildscript {
             ndkVersion = "24.0.8215888"
         } else {
             // Otherwise we default to the side-by-side NDK version from AGP.
+            // ndkVersion = "21.0.6113669"
+
             ndkVersion = "21.4.7075529"
         }
     }
@@ -33,6 +35,7 @@ buildscript {
         google()
         mavenCentral()
         maven { url "https://chaquo.com/maven" }
+        jcenter()
 
     }
     dependencies {
@@ -40,6 +43,8 @@ buildscript {
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("de.undercouch:gradle-download-task:5.0.1")
         classpath "com.chaquo.python:gradle:12.0.0"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32" // use your version
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

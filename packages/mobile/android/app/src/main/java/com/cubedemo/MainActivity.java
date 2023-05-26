@@ -1,5 +1,7 @@
 package com.cubedemo;
 
+import org.opencv.core.Mat;
+import org.opencv.core.CvType;
 
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.cubedemo.MarkerDetector;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -62,7 +65,13 @@ public class MainActivity extends ReactActivity {
   CameraFrames frameListner = new CameraFrames() {
     private static final long FRAME_INTERVAL_MS = 1000 / 24; // 24 fps
     private long lastFrameTime = System.currentTimeMillis();
+    String[] urls = {
+        "https://res.cloudinary.com/doblnhena/image/upload/v1682431189/marker_lpmhnx.jpg",
+        "https://res.cloudinary.com/doblnhena/image/upload/v1682431190/marker7_e5h36e.jpg"
+    };
+    MarkerDetector detector = new MarkerDetector(urls);
 
+ 
     @Override
     public void onCameraFrame(Bitmap bitmap, long timestamp) {
 
@@ -70,8 +79,14 @@ public class MainActivity extends ReactActivity {
       bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
       byte[] bytes = outputStream.toByteArray();
 
-      PyObject result = markerDetectionFunction.call(bytes);
-      String jsonString = result.toString();
+
+      // PyObject result = markerDetectionFunction.call(bytes);
+      // String jsonString = result.toString();
+
+
+      Mat frame = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC1);
+      Utils.bitmapToMat(bitmap, frame);
+      String result = detector.detectMarker(frame);
 
       // bytes = result.toJava(byte[].class);
       // Bitmap resultBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -88,7 +103,8 @@ public class MainActivity extends ReactActivity {
       // byte[] bytes = new byte[byteArraySize];
       // Arrays.fill(bytes, (byte) staticValue);
 
-      CameraFrameModule.sendCameraFrame(jsonString);
+      CameraFrameModule.sendCameraFrame(result);
+      // CameraFrameModule.sendCameraFrame(jsonString);
     }
 
     @Override
