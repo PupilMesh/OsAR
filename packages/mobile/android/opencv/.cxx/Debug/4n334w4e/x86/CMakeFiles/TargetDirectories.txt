@@ -1,3 +1,0 @@
-C:/Users/Krishnan/Desktop/PupilMesh/PMeshRepo/OsAR/packages/mobile/android/opencv/.cxx/Debug/4n334w4e/x86/CMakeFiles/opencv_jni_shared.dir
-C:/Users/Krishnan/Desktop/PupilMesh/PMeshRepo/OsAR/packages/mobile/android/opencv/.cxx/Debug/4n334w4e/x86/CMakeFiles/edit_cache.dir
-C:/Users/Krishnan/Desktop/PupilMesh/PMeshRepo/OsAR/packages/mobile/android/opencv/.cxx/Debug/4n334w4e/x86/CMakeFiles/rebuild_cache.dir

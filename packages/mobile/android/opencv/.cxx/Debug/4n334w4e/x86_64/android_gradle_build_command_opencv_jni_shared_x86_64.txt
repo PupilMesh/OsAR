@@ -1,7 +1,0 @@
-Executable : C:\Users\Krishnan\AppData\Local\Android\Sdk\cmake\3.18.1\bin\ninja.exe
-arguments : 
--C
-C:\Users\Krishnan\Desktop\PupilMesh\PMeshRepo\OsAR\packages\mobile\android\opencv\.cxx\Debug\4n334w4e\x86_64
-opencv_jni_shared
-jvmArgs : 
-

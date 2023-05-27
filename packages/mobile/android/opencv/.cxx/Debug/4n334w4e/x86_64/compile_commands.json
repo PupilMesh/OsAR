@@ -1,7 +1,0 @@
-[
-{
-  "directory": "C:/Users/Krishnan/Desktop/PupilMesh/PMeshRepo/OsAR/packages/mobile/android/opencv/.cxx/Debug/4n334w4e/x86_64",
-  "command": "C:\\Users\\Krishnan\\AppData\\Local\\Android\\Sdk\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=x86_64-none-linux-android21 --gcc-toolchain=C:/Users/Krishnan/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/Krishnan/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC -o CMakeFiles\\opencv_jni_shared.dir\\dummy.cpp.o -c C:\\Users\\Krishnan\\Desktop\\PupilMesh\\PMeshRepo\\OsAR\\packages\\mobile\\android\\opencv\\libcxx_helper\\dummy.cpp",
-  "file": "C:\\Users\\Krishnan\\Desktop\\PupilMesh\\PMeshRepo\\OsAR\\packages\\mobile\\android\\opencv\\libcxx_helper\\dummy.cpp"
-}
-]
