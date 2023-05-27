@@ -3,6 +3,7 @@ package com.cubedemo;
 import org.opencv.core.Mat;
 import org.opencv.core.CvType;
 import org.opencv.android.Utils;
+import org.opencv.android.OpenCVLoader;
 
 // import com.chaquo.python.PyObject;
 // import com.chaquo.python.Python;
@@ -42,14 +43,22 @@ public class MainActivity extends ReactActivity {
 
   // private Python py;
   // private PyObject markerDetectionFunction;
-
+  MarkerDetector detector;
+  String[] urls = {
+      "https://res.cloudinary.com/doblnhena/image/upload/v1682431189/marker_lpmhnx.jpg",
+      "https://res.cloudinary.com/doblnhena/image/upload/v1682431190/marker7_e5h36e.jpg"
+  };
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     
     super.onCreate(savedInstanceState);
-    Log.i(TAG, "On create called");
-
-
+     try {
+        if (OpenCVLoader.initDebug()) {
+          detector = new MarkerDetector(urls);
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
   //   if (!Python.isStarted()) {
   //     Python.start(new AndroidPlatform(this));
   //   }
@@ -68,36 +77,31 @@ public class MainActivity extends ReactActivity {
   CameraFrames frameListner = new CameraFrames() {
     private static final long FRAME_INTERVAL_MS = 1000 / 24; // 24 fps
     private long lastFrameTime = System.currentTimeMillis();
-    String[] urls = {
-        "https://res.cloudinary.com/doblnhena/image/upload/v1682431189/marker_lpmhnx.jpg",
-        "https://res.cloudinary.com/doblnhena/image/upload/v1682431190/marker7_e5h36e.jpg"
-    };
-    MarkerDetector detector;
-    // {
-    //   try {
-    //     detector = new MarkerDetector(urls);
-    //   } catch (Exception e) {
-    //     e.printStackTrace();
-    //     // Optionally, you could also throw a RuntimeException here to indicate
-    //     // initialization failure.
-    //   }
-    // }
+
+    
  
     @Override
     public void onCameraFrame(Bitmap bitmap, long timestamp){
       try {
+        // Log.i(TAG, "Detector called");
+      if(detector==null)
+      {
         detector = new MarkerDetector(urls);
-
+      }
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
       byte[] bytes = outputStream.toByteArray();
 
       // PyObject result = markerDetectionFunction.call(bytes);
       // String jsonString = result.toString();
-
+        Log.i(TAG, "Bitmap");
+        Log.i(TAG, bitmap.getWidth()+"");
 
       Mat frame = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC1);
       Utils.bitmapToMat(bitmap, frame);
+      Log.i(TAG,
+            "Frame created with dimensions: " + frame.width() + "x" + frame.height() + " and type: " + frame.type());
+
       String result = detector.detectMarker(frame);
 
       // bytes = result.toJava(byte[].class);
