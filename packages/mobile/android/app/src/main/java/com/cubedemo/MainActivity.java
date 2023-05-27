@@ -73,23 +73,24 @@ public class MainActivity extends ReactActivity {
         "https://res.cloudinary.com/doblnhena/image/upload/v1682431190/marker7_e5h36e.jpg"
     };
     MarkerDetector detector;
-    {
-      try {
-        detector = new MarkerDetector(urls);
-      } catch (Exception e) {
-        e.printStackTrace();
-        // Optionally, you could also throw a RuntimeException here to indicate
-        // initialization failure.
-      }
-    }
+    // {
+    //   try {
+    //     detector = new MarkerDetector(urls);
+    //   } catch (Exception e) {
+    //     e.printStackTrace();
+    //     // Optionally, you could also throw a RuntimeException here to indicate
+    //     // initialization failure.
+    //   }
+    // }
  
     @Override
     public void onCameraFrame(Bitmap bitmap, long timestamp){
-      try{
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      try {
+        detector = new MarkerDetector(urls);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
       byte[] bytes = outputStream.toByteArray();
-
 
       // PyObject result = markerDetectionFunction.call(bytes);
       // String jsonString = result.toString();
