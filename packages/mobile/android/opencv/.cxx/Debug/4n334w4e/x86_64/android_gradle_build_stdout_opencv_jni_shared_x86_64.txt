@@ -1,0 +1,2 @@
+ninja: Entering directory `C:\Users\Krishnan\Desktop\PupilMesh\PMeshRepo\OsAR\packages\mobile\android\opencv\.cxx\Debug\4n334w4e\x86_64'
+ninja: no work to do.

@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-apply plugin: 'com.chaquo.python'
+// apply plugin: 'com.chaquo.python'
 
 import com.android.build.OutputFile
 
@@ -130,6 +130,10 @@ def reactNativeArchitectures() {
 }
 
 android {
+    packagingOptions {
+            pickFirst 'lib/**/libc++_shared.so'
+    }
+
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -141,18 +145,18 @@ android {
         versionCode 1
         versionName "1.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
-        python {
-            buildPython "C:/Python39/python.exe"  // Adjust the path to your Python interpreter
-            pip {
-                install "opencv-python"                 
-            }
-            pip{
-                    install "numpy"  // Add any other Python packages your project requires
-            }
-        }
-        ndk {
-            abiFilters "arm64-v8a"
-        }
+        // python {
+        //     buildPython "C:/Python39/python.exe"  // Adjust the path to your Python interpreter
+        //     pip {
+        //         install "opencv-python"                 
+        //     }
+        //     pip{
+        //             install "numpy"  // Add any other Python packages your project requires
+        //     }
+        // }
+        // ndk {
+        //     abiFilters "arm64-v8a"
+        // }
         if (isNewArchitectureEnabled()) {
             // We configure the NDK build only if you decide to opt-in for the New Architecture.
             externalNativeBuild {

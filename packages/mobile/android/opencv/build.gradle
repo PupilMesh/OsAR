@@ -98,7 +98,9 @@ println "OpenCV: " +openCVersionName + " " + project.buildscript.sourceFile
 
 android {
     compileSdkVersion 26
-
+    packagingOptions {
+            exclude 'lib/**/libc++_shared.so'
+    }
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 26

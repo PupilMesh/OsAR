@@ -19,8 +19,7 @@ import android.graphics.BitmapFactory;
 
 public class MarkerDetector {
     // Initialize the AKAZE feature detector
-    private final FeatureDetector detector = FeatureDetector.create(FeatureDetector.AKAZE);
-    private final DescriptorExtractor extractor = DescriptorExtractor.create(DescriptorExtractor.AKAZE);
+    private final AKAZE detector = AKAZE.create();
     private final DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
 
     // HashMap to hold smaller images
@@ -28,7 +27,7 @@ public class MarkerDetector {
     private final HashMap<String, Mat> smallerImagesDescriptors = new HashMap<>();
 
     public MarkerDetector(String[] urls) throws Exception {
-        for(String url : urls) {
+        for (String url : urls) {
             // Download the smaller image
             Bitmap bmp = downloadImage(url);
             Mat img = new Mat(bmp.getWidth(), bmp.getHeight(), CvType.CV_8UC1);
@@ -38,8 +37,7 @@ public class MarkerDetector {
             // Compute key points and descriptors for the smaller image
             MatOfKeyPoint keyPoints = new MatOfKeyPoint();
             Mat descriptors = new Mat();
-            detector.detect(img, keyPoints);
-            extractor.compute(img, keyPoints, descriptors);
+            detector.detectAndCompute(img, new Mat(), keyPoints, descriptors);
 
             // Store the key points and descriptors in the HashMap
             smallerImagesKeyPoints.put(url, keyPoints);
@@ -67,8 +65,7 @@ public class MarkerDetector {
         // Compute key points and descriptors for the frame
         MatOfKeyPoint frameKeyPoints = new MatOfKeyPoint();
         Mat frameDescriptors = new Mat();
-        detector.detect(grayFrame, frameKeyPoints);
-        extractor.compute(grayFrame, frameKeyPoints, frameDescriptors);
+        detector.detectAndCompute(grayFrame, new Mat(), frameKeyPoints, frameDescriptors);
 
         // Match the frame descriptors with the smaller images descriptors
         for (Map.Entry<String, Mat> entry : smallerImagesDescriptors.entrySet()) {

@@ -2,10 +2,11 @@ package com.cubedemo;
 
 import org.opencv.core.Mat;
 import org.opencv.core.CvType;
+import org.opencv.android.Utils;
 
-import com.chaquo.python.PyObject;
-import com.chaquo.python.Python;
-import com.chaquo.python.android.AndroidPlatform;
+// import com.chaquo.python.PyObject;
+// import com.chaquo.python.Python;
+// import com.chaquo.python.android.AndroidPlatform;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -39,19 +40,21 @@ public class MainActivity extends ReactActivity {
   boolean hasCameraPermission = false;
   ManageExternalCamera externalCamera;
 
-  private Python py;
-  private PyObject markerDetectionFunction;
+  // private Python py;
+  // private PyObject markerDetectionFunction;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     
     super.onCreate(savedInstanceState);
     Log.i(TAG, "On create called");
-    if (!Python.isStarted()) {
-      Python.start(new AndroidPlatform(this));
-    }
-  py=Python.getInstance();
-  markerDetectionFunction=py.getModule("image_process").get("detect_marker");
+
+
+  //   if (!Python.isStarted()) {
+  //     Python.start(new AndroidPlatform(this));
+  //   }
+  // py=Python.getInstance();
+  // markerDetectionFunction=py.getModule("image_process").get("detect_marker");
   }
 
   @Override
@@ -69,12 +72,20 @@ public class MainActivity extends ReactActivity {
         "https://res.cloudinary.com/doblnhena/image/upload/v1682431189/marker_lpmhnx.jpg",
         "https://res.cloudinary.com/doblnhena/image/upload/v1682431190/marker7_e5h36e.jpg"
     };
-    MarkerDetector detector = new MarkerDetector(urls);
-
+    MarkerDetector detector;
+    {
+      try {
+        detector = new MarkerDetector(urls);
+      } catch (Exception e) {
+        e.printStackTrace();
+        // Optionally, you could also throw a RuntimeException here to indicate
+        // initialization failure.
+      }
+    }
  
     @Override
-    public void onCameraFrame(Bitmap bitmap, long timestamp) {
-
+    public void onCameraFrame(Bitmap bitmap, long timestamp){
+      try{
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
       byte[] bytes = outputStream.toByteArray();
@@ -105,6 +116,9 @@ public class MainActivity extends ReactActivity {
 
       CameraFrameModule.sendCameraFrame(result);
       // CameraFrameModule.sendCameraFrame(jsonString);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
 
     @Override
@@ -112,7 +126,7 @@ public class MainActivity extends ReactActivity {
       Log.i(TAG, "Byte arrary coming");
     }
   };
-  R100PermissionListener listener = new R100PermissionListener() {
+  R100PermissionListener listener=new R100PermissionListener(){
     @Override
     public void permissionGranted(Boolean bool, int code) {
       Log.i(TAG, "Permission Granted");
