@@ -6,7 +6,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import React, { useCallback, useState, useEffect } from 'react';
-import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Quaternion, Scene, StandardMaterial, UniversalCamera, Vector3, PhotoDome, Vector4 } from '@babylonjs/core';
+import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Quaternion, Scene, StandardMaterial, UniversalCamera, Vector3, PhotoDome, Vector4, Tools } from '@babylonjs/core';
 import GLRenderer from '../GLRenderer';
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import "@babylonjs/loaders/glTF";
@@ -24,15 +24,41 @@ export default function BabylonScene({modelUrls}) {
     //     camera.rotation = new Vector3(x, y, z);
     //   }
     // });
+let change;
+let startTime = 0;
 
-  imuEmitter.addListener('Imu', (event) => {
-      let array = event.split(",")
+imuEmitter.addListener('Imu', (event) => {
+    let array = event.split(",");
     if (camera) {
-        const quaternion = new Quaternion(parseFloat(array[0]),parseFloat(array[1]),parseFloat(array[2]),parseFloat(array[3])); // use the values from the rotation vector sensor
-        const euler = quaternion.toEulerAngles();    
-        camera.rotation = euler;  
-      }
-    });
+       
+      let imuQuaternion = new Quaternion(parseFloat(array[1]), parseFloat(array[2]), parseFloat(array[3]), parseFloat(array[0])); // Please note the order has been changed
+
+        // Apply the inverse of the IMU rotation to the camera's rotation
+        // This will rotate the camera to point in the direction that the device is pointing
+        let invertedImuQuaternion = imuQuaternion.conjugate();
+      camera.rotationQuaternion = invertedImuQuaternion;
+      
+      // const quaternion = new Quaternion(parseFloat(array[0]), parseFloat(array[1]), parseFloat(array[2]), parseFloat(array[3]));
+        // const euler = quaternion.toEulerAngles();    
+        //  camera.rotation.set(euler.x,euler.y,euler.z);  
+      //  const quat90 = new Quaternion.RotationYawPitchRoll(0, 0, -Math.PI / 2); // -90 degrees in radians
+      // let quat = quat90.multiply(quaternion);
+      //   quat.set(quat.y, quat.x, -quat.z, -quat.w);
+
+        // let euler = quat.toEulerAngles();
+        // let temp = euler.z;
+        // euler.z = euler.x;
+        // euler.x = temp;
+        //  camera.rotation.set(-euler.x,-euler.y,-euler.z);  
+
+      //   quat = new Quaternion.RotationYawPitchRoll(-euler.x, -euler.y, -euler.z);
+
+      //   // change = new Tools.Now - startTime; // Time in milliseconds since startTime
+      //   let smoothing = 1.0;
+      //   camera.rotationQuaternion = quat
+    }
+});
+
 
     return () => {
       // subscription.unsubscribe();
