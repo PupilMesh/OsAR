@@ -6,7 +6,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import React, { useCallback, useState, useEffect } from 'react';
-import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Quaternion, Scene, StandardMaterial, UniversalCamera, Vector3, PhotoDome, Vector4, Tools } from '@babylonjs/core';
+import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Quaternion, Scene, StandardMaterial,FreeCamera, UniversalCamera, Vector3, PhotoDome, Vector4, Tools } from '@babylonjs/core';
 import GLRenderer from '../GLRenderer';
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import "@babylonjs/loaders/glTF";
@@ -32,11 +32,12 @@ imuEmitter.addListener('Imu', (event) => {
     if (camera) {
        
       let imuQuaternion = new Quaternion(parseFloat(array[1]), parseFloat(array[2]), parseFloat(array[3]), parseFloat(array[0])); // Please note the order has been changed
+        camera.rotationQuaternion = imuQuaternion;
 
         // Apply the inverse of the IMU rotation to the camera's rotation
         // This will rotate the camera to point in the direction that the device is pointing
-        let invertedImuQuaternion = imuQuaternion.conjugate();
-      camera.rotationQuaternion = invertedImuQuaternion;
+      //   let invertedImuQuaternion = imuQuaternion.conjugate();
+      // camera.rotationQuaternion = invertedImuQuaternion;
       
       // const quaternion = new Quaternion(parseFloat(array[0]), parseFloat(array[1]), parseFloat(array[2]), parseFloat(array[3]));
         // const euler = quaternion.toEulerAngles();    
@@ -72,7 +73,7 @@ imuEmitter.addListener('Imu', (event) => {
 
     scene.clearColor = Color4.FromHexString(`#000000`);
 
-    const camera = new UniversalCamera('camera', new Vector3(0, 3, -5), scene);
+    const camera = new FreeCamera('camera', new Vector3(0, 3, -5), scene);
     camera.setTarget(Vector3.Zero());
     setCamera(camera);
 
