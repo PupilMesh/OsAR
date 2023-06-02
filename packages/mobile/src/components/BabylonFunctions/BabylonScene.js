@@ -24,73 +24,81 @@ export default function BabylonScene({modelUrls}) {
   const [initialIMU,setIMU] = useState([0,0,0])
       const single = Math.PI / 30
 
+  const updateCameraRotation = () => {
+    // alpha is up down (half sphere up and down)
+// beta is completely horizontally moving thing complete sphere
+    //gama is rotation of phone like a clock 
+        // var abcQuaternion = new Quaternion.RotationAlphaBetaGamma(alpha, beta, gama);
+      camera.rotation.set(alpha,0,0);
+      console.log("updated cam")
+  }
  const handleIncrementAlpha = () => {
    setAlpha((prevAlpha) => prevAlpha + single);
-         camera.rotationQuaternion= new Quaternion(alpha,beta,gama,1)
+         updateCameraRotation();
 
   };
 
   const handleIncrementBeta = () => {
     setBeta((prevBeta) => prevBeta + single);
-          camera.rotationQuaternion= new Quaternion(alpha,beta,gama,1)
+          updateCameraRotation();
 
   };
 
   
   const handleIncrementGama = () => {
     setGama((prevGama) => prevGama + single);
-        camera.rotationQuaternion= new Quaternion(alpha,beta,gama,1)
+        updateCameraRotation();
 
   };
   useEffect(() => {
 // let change;
 // let startTime = 0;
 imuEmitter.addListener('Imu', (event) => {
-  let array = event.split(",");
-  let floatArray = array.map((element) => {
-    let floatValue = parseFloat(element);
-    return floatValue.toFixed(5);
-  });
-  array=floatArray
-    if (camera) {
-      let temp=[initialIMU[0]-array[0],initialIMU[1]-array[1],initialIMU[2]-array[2],initialIMU[3]-array[3]]
-      temp = temp.map((element) => {
-        let floatValue = parseFloat(element);
-        return floatValue.toFixed(5);
-      });
-      console.log(temp)
-      // let imuQuaternion = new Quaternion(parseFloat(array[1]), parseFloat(array[2]), parseFloat(array[3]), parseFloat(array[0])); // Please note the order has been changed
-        // camera.rotationQuaternion = imuQuaternion;
+  // let array = event.split(",");
+  // let floatArray = array.map((element) => {
+  //   let floatValue = parseFloat(element);
+  //   return floatValue.toFixed(5);
+  // });
+  // array=floatArray
+  //   if (camera) {
+  //     let temp=[initialIMU[0]-array[0],initialIMU[1]-array[1],initialIMU[2]-array[2],initialIMU[3]-array[3]]
+  //     temp = temp.map((element) => {
+  //       let floatValue = parseFloat(element);
+  //       return floatValue.toFixed(5);
+  //     });
+  //     console.log(temp)
+  //     // let imuQuaternion = new Quaternion(parseFloat(array[1]), parseFloat(array[2]), parseFloat(array[3]), parseFloat(array[0])); // Please note the order has been changed
+  //       // camera.rotationQuaternion = imuQuaternion;
 
-        // Apply the inverse of the IMU rotation to the camera's rotation
-        // This will rotate the camera to point in the direction that the device is pointing
-      //   let invertedImuQuaternion = imuQuaternion.conjugate();
-      // camera.rotationQuaternion = invertedImuQuaternion;
+  //       // Apply the inverse of the IMU rotation to the camera's rotation
+  //       // This will rotate the camera to point in the direction that the device is pointing
+  //     //   let invertedImuQuaternion = imuQuaternion.conjugate();
+  //     // camera.rotationQuaternion = invertedImuQuaternion;
       
-      // const quaternion = new Quaternion(parseFloat(array[0]), parseFloat(array[1]), parseFloat(array[2]), parseFloat(array[3]));
-        // const euler = quaternion.toEulerAngles();
-        //  camera.rotation.set(euler.x,euler.y,euler.z);
-      //  const quat90 = new Quaternion.RotationYawPitchRoll(0, 0, -Math.PI / 2); // -90 degrees in radians
-      // let quat = quat90.multiply(quaternion);
-      //   quat.set(quat.y, quat.x, -quat.z, -quat.w);
+  //     // const quaternion = new Quaternion(parseFloat(array[0]), parseFloat(array[1]), parseFloat(array[2]), parseFloat(array[3]));
+  //       // const euler = quaternion.toEulerAngles();
+  //       //  camera.rotation.set(euler.x,euler.y,euler.z);
+  //     //  const quat90 = new Quaternion.RotationYawPitchRoll(0, 0, -Math.PI / 2); // -90 degrees in radians
+  //     // let quat = quat90.multiply(quaternion);
+  //     //   quat.set(quat.y, quat.x, -quat.z, -quat.w);
 
-        // let euler = quat.toEulerAngles();
-        // let temp = euler.z;
-        // euler.z = euler.x;
-        // euler.x = temp;
-        //  camera.rotation.set(-euler.x,-euler.y,-euler.z);
+  //       // let euler = quat.toEulerAngles();
+  //       // let temp = euler.z;
+  //       // euler.z = euler.x;
+  //       // euler.x = temp;
+  //       //  camera.rotation.set(-euler.x,-euler.y,-euler.z);
 
-      //   quat = new Quaternion.RotationYawPitchRoll(-euler.x, -euler.y, -euler.z);
+  //     //   quat = new Quaternion.RotationYawPitchRoll(-euler.x, -euler.y, -euler.z);
 
-      //   // change = new Tools.Now - startTime; // Time in milliseconds since startTime
-      //   let smoothing = 1.0;
-      //   camera.rotationQuaternion = quat
-    } else {
-      setIMU(floatArray)
-    }
+  //     //   // change = new Tools.Now - startTime; // Time in milliseconds since startTime
+  //     //   let smoothing = 1.0;
+  //     //   camera.rotationQuaternion = quat
+  //   } else {
+  //     setIMU(floatArray)
+  //   }
 });
-    if(camera)
-      camera.rotationQuaternion= new Quaternion(alpha,beta,gama,1)
+    // if(camera)
+    //   updateCameraRotation();
 
     return () => {
       // subscription.unsubscribe();
