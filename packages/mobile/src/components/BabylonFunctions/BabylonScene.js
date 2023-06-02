@@ -5,34 +5,62 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import useStyles from '../../styles';
 import React, { useCallback, useState, useEffect } from 'react';
 import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Quaternion, Scene, StandardMaterial,FreeCamera, UniversalCamera, Vector3, PhotoDome, Vector4, Tools } from '@babylonjs/core';
 import GLRenderer from '../GLRenderer';
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import "@babylonjs/loaders/glTF";
 import { gyroscope } from 'react-native-sensors';
-import { StatusBar, View, Text, Platform, NativeEventEmitter, NativeModules, Image } from 'react-native';
+import { Button, StatusBar, View, Text, Platform, NativeEventEmitter, NativeModules, Image } from 'react-native';
 const Imu  = NativeModules.Imu;
 const imuEmitter = new NativeEventEmitter(Imu);
 
 export default function BabylonScene({modelUrls}) {
   const [camera, setCamera] = useState(null);
+    const [alpha,setAlpha] = useState(0);
+    const [beta,setBeta] = useState(0);
+  const [gama, setGama] = useState(0);
+  const [initialIMU,setIMU] = useState([0,0,0])
+      const single = Math.PI / 30
 
+ const handleIncrementAlpha = () => {
+   setAlpha((prevAlpha) => prevAlpha + single);
+         camera.rotationQuaternion= new Quaternion(alpha,beta,gama,1)
+
+  };
+
+  const handleIncrementBeta = () => {
+    setBeta((prevBeta) => prevBeta + single);
+          camera.rotationQuaternion= new Quaternion(alpha,beta,gama,1)
+
+  };
+
+  
+  const handleIncrementGama = () => {
+    setGama((prevGama) => prevGama + single);
+        camera.rotationQuaternion= new Quaternion(alpha,beta,gama,1)
+
+  };
   useEffect(() => {
-    // const subscription = gyroscope.subscribe(({ x, y, z }) => {
-    //   if(camera) {
-    //     camera.rotation = new Vector3(x, y, z);
-    //   }
-    // });
-let change;
-let startTime = 0;
-
+// let change;
+// let startTime = 0;
 imuEmitter.addListener('Imu', (event) => {
-    let array = event.split(",");
+  let array = event.split(",");
+  let floatArray = array.map((element) => {
+    let floatValue = parseFloat(element);
+    return floatValue.toFixed(5);
+  });
+  array=floatArray
     if (camera) {
-       
-      let imuQuaternion = new Quaternion(parseFloat(array[1]), parseFloat(array[2]), parseFloat(array[3]), parseFloat(array[0])); // Please note the order has been changed
-        camera.rotationQuaternion = imuQuaternion;
+      let temp=[initialIMU[0]-array[0],initialIMU[1]-array[1],initialIMU[2]-array[2],initialIMU[3]-array[3]]
+      temp = temp.map((element) => {
+        let floatValue = parseFloat(element);
+        return floatValue.toFixed(5);
+      });
+      console.log(temp)
+      // let imuQuaternion = new Quaternion(parseFloat(array[1]), parseFloat(array[2]), parseFloat(array[3]), parseFloat(array[0])); // Please note the order has been changed
+        // camera.rotationQuaternion = imuQuaternion;
 
         // Apply the inverse of the IMU rotation to the camera's rotation
         // This will rotate the camera to point in the direction that the device is pointing
@@ -40,8 +68,8 @@ imuEmitter.addListener('Imu', (event) => {
       // camera.rotationQuaternion = invertedImuQuaternion;
       
       // const quaternion = new Quaternion(parseFloat(array[0]), parseFloat(array[1]), parseFloat(array[2]), parseFloat(array[3]));
-        // const euler = quaternion.toEulerAngles();    
-        //  camera.rotation.set(euler.x,euler.y,euler.z);  
+        // const euler = quaternion.toEulerAngles();
+        //  camera.rotation.set(euler.x,euler.y,euler.z);
       //  const quat90 = new Quaternion.RotationYawPitchRoll(0, 0, -Math.PI / 2); // -90 degrees in radians
       // let quat = quat90.multiply(quaternion);
       //   quat.set(quat.y, quat.x, -quat.z, -quat.w);
@@ -50,16 +78,19 @@ imuEmitter.addListener('Imu', (event) => {
         // let temp = euler.z;
         // euler.z = euler.x;
         // euler.x = temp;
-        //  camera.rotation.set(-euler.x,-euler.y,-euler.z);  
+        //  camera.rotation.set(-euler.x,-euler.y,-euler.z);
 
       //   quat = new Quaternion.RotationYawPitchRoll(-euler.x, -euler.y, -euler.z);
 
       //   // change = new Tools.Now - startTime; // Time in milliseconds since startTime
       //   let smoothing = 1.0;
       //   camera.rotationQuaternion = quat
+    } else {
+      setIMU(floatArray)
     }
 });
-
+    if(camera)
+      camera.rotationQuaternion= new Quaternion(alpha,beta,gama,1)
 
     return () => {
       // subscription.unsubscribe();
@@ -73,8 +104,8 @@ imuEmitter.addListener('Imu', (event) => {
 
     scene.clearColor = Color4.FromHexString(`#000000`);
 
-    const camera = new FreeCamera('camera', new Vector3(0, 3, -5), scene);
-    camera.setTarget(Vector3.Zero());
+    const camera = new FreeCamera('camera', new Vector3(0, 0, 0), scene);
+    // camera.setTarget(Vector3.Zero());
     setCamera(camera);
 
     const light = new HemisphericLight('HemiLight', new Vector3(0, 9, -5), scene);
@@ -105,10 +136,22 @@ imuEmitter.addListener('Imu', (event) => {
       engine.dispose();
     };
   }, [modelUrls]); // modelUrls is a dependency now
+const styles = useStyles();
 
   return (
     <>
       <GLRenderer onCreateEngine={onCreateEngine} />
+      <View style={styles.Overlay_Root}>
+          <View style={{ padding: 10 }}>
+            <Button title="Increment Alpha" onPress={handleIncrementAlpha} />
+          </View>
+          <View style={{ padding: 10 }}>
+            <Button title="Increment Beta" onPress={handleIncrementBeta} />
+          </View>
+          <View style={{ padding: 10 }}>
+            <Button title="Increment Gama" onPress={handleIncrementGama} />
+        </View>
+      </View>
     </>
   )
 }
