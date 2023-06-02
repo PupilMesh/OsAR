@@ -25,6 +25,8 @@ export default function BabylonScene({modelUrls}) {
       const single = Math.PI / 30
 
   const updateCameraRotation = () => {
+        // For camera.rotation.set(allpha,beta,gama)
+
     // alpha is up down (half sphere up and down)
 // beta is completely horizontally moving thing complete sphere
     //gama is rotation of phone like a clock 
@@ -53,13 +55,21 @@ export default function BabylonScene({modelUrls}) {
   useEffect(() => {
 // let change;
 // let startTime = 0;
-imuEmitter.addListener('Imu', (event) => {
-  // let array = event.split(",");
-  // let floatArray = array.map((element) => {
-  //   let floatValue = parseFloat(element);
-  //   return floatValue.toFixed(5);
-  // });
-  // array=floatArray
+  imuEmitter.addListener('Imu', (event) => {
+   // At this point, event[0] is the azimuth, event[1] is
+        // the pitch,
+        // and event[2] is the roll.
+  let array = event.split(",");
+  console.log(array)
+  let floatArray = array.map((element) => {
+    let floatValue = parseFloat(element);
+    return floatValue.toFixed(5);
+  });
+  array = floatArray
+  if (camera) {
+    camera.rotation.set(array[1],-array[2],0)
+    // camera.rotation.set(array[1],array[0],0)
+  }
   //   if (camera) {
   //     let temp=[initialIMU[0]-array[0],initialIMU[1]-array[1],initialIMU[2]-array[2],initialIMU[3]-array[3]]
   //     temp = temp.map((element) => {
@@ -112,7 +122,7 @@ imuEmitter.addListener('Imu', (event) => {
 
     scene.clearColor = Color4.FromHexString(`#000000`);
 
-    const camera = new FreeCamera('camera', new Vector3(0, 0, 0), scene);
+    const camera = new FreeCamera('camera', new Vector3(0, 0, -5), scene);
     // camera.setTarget(Vector3.Zero());
     setCamera(camera);
 
