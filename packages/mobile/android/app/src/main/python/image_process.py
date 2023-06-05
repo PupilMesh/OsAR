@@ -42,6 +42,29 @@ def find_images_in_image(img, smaller_images, ratio_threshold=0.7):
             img_bgr = cv2.polylines(img_bgr, [np.int32(dst)], True, (0, 255, 0), 3, cv2.LINE_AA)
             img_bgr = cv2.putText(img_bgr, name, tuple(np.int32(dst[0][0])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
 
+    # for name, (template, kp2, des2) in smaller_images.items():
+    #     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
+    #     matches = bf.knnMatch(des1, des2, k=2)
+
+    #     good_matches = []
+    #     for m, n in matches:
+    #         if m.distance < ratio_threshold * n.distance:
+    #             good_matches.append(m)
+
+    #     if len(good_matches) > 5:
+    #         detected_markers.append(name)
+    #         src_pts = np.float32([kp1[m.queryIdx].pt for m in good_matches]).reshape(-1, 1, 2)
+    #         dst_pts = np.float32([kp2[m.trainIdx].pt for m in good_matches]).reshape(-1, 1, 2)
+
+    #         M, _ = cv2.findHomography(dst_pts, src_pts, cv2.RANSAC, 5.0)
+    #         h, w = template.shape
+
+    #         points = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
+    #         dst = cv2.perspectiveTransform(points, M)
+
+    #         img_bgr = cv2.polylines(img_bgr, [np.int32(dst)], True, (0, 255, 0), 3, cv2.LINE_AA)
+    #         img_bgr = cv2.putText(img_bgr, name, tuple(np.int32(dst[0][0])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+
     # retval, buffer = cv2.imencode('.jpg', img_bgr)
     # image_bytes = np.array(buffer).tobytes()
     # return {"detected_markers": detected_markers, "image": image_bytes}

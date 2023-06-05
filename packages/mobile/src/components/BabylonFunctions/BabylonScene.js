@@ -31,7 +31,7 @@ export default function BabylonScene({modelUrls}) {
 // beta is completely horizontally moving thing complete sphere
     //gama is rotation of phone like a clock 
         // var abcQuaternion = new Quaternion.RotationAlphaBetaGamma(alpha, beta, gama);
-      camera.rotation.set(alpha,0,0);
+      camera.rotation.set(alpha,beta,gama);
       console.log("updated cam")
   }
  const handleIncrementAlpha = () => {
@@ -67,7 +67,7 @@ export default function BabylonScene({modelUrls}) {
   });
   array = floatArray
   if (camera) {
-    camera.rotation.set(array[1],-array[2],0)
+    // camera.rotation.set(array[1],-array[2],array[0])
     // camera.rotation.set(array[1],array[0],0)
   }
   //   if (camera) {
@@ -127,15 +127,15 @@ export default function BabylonScene({modelUrls}) {
     setCamera(camera);
 
     const light = new HemisphericLight('HemiLight', new Vector3(0, 9, -5), scene);
-    var dome = new PhotoDome(
-        "testdome",
-        "https://res.cloudinary.com/doblnhena/image/upload/v1684415267/360photo_mjy98u.jpg",
-        {
-            resolution: 32,
-            size: 1000
-        },
-        scene
-    );
+    // var dome = new PhotoDome(
+    //     "testdome",
+    //     "https://res.cloudinary.com/doblnhena/image/upload/v1684415267/360photo_mjy98u.jpg",
+    //     {
+    //         resolution: 32,
+    //         size: 1000
+    //     },
+    //     scene
+    // );
     modelUrls.forEach(modelUrl => {
       SceneLoader.ImportMesh("", modelUrl, "", scene, function (newMeshes) {
         const root = newMeshes[0];

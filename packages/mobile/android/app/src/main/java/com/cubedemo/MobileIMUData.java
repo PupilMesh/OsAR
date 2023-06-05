@@ -56,7 +56,6 @@ public class MobileIMUData implements SensorEventListener {
         // the pitch,
         // and orientationValues[2] is the roll.
 
-        // Now pass these values to your callback
         callback.onCallback(orientationValues);
     }
 

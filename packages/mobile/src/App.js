@@ -47,8 +47,12 @@ export default function App() {
 
   useEffect(() => {
     const subscription = cameraEmitter.addListener('cameraFrame', event => {
-      event = JSON.parse(event)
-      const { detected_markers, image } = event;
+      // event = JSON.parse(event)
+      // const { detected_markers, image } = event;
+      
+      const image = event;
+      const detected_markers = [""];
+      
       // setDebug(detected_markers[0])
       // if (detected_markers[0] == "image1") {
       //       setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",...modelUrls]);
