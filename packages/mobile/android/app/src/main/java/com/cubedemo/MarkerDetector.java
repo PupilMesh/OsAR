@@ -62,33 +62,33 @@ public class MarkerDetector {
         Mat grayFrame = new Mat();
         Imgproc.cvtColor(frame, grayFrame, Imgproc.COLOR_RGBA2GRAY);
 
-        // // Compute key points and descriptors for the frame
-        // MatOfKeyPoint frameKeyPoints = new MatOfKeyPoint();
-        // Mat frameDescriptors = new Mat();
-        // detector.detectAndCompute(grayFrame, new Mat(), frameKeyPoints, frameDescriptors);
+        // Compute key points and descriptors for the frame
+        MatOfKeyPoint frameKeyPoints = new MatOfKeyPoint();
+        Mat frameDescriptors = new Mat();
+        detector.detectAndCompute(grayFrame, new Mat(), frameKeyPoints, frameDescriptors);
 
-        // // Match the frame descriptors with the smaller images descriptors
-        // for (Map.Entry<String, Mat> entry : smallerImagesDescriptors.entrySet()) {
-        //     String url = entry.getKey();
-        //     Mat smallerImageDescriptors = entry.getValue();
+        // Match the frame descriptors with the smaller images descriptors
+        for (Map.Entry<String, Mat> entry : smallerImagesDescriptors.entrySet()) {
+            String url = entry.getKey();
+            Mat smallerImageDescriptors = entry.getValue();
 
-        //     MatOfDMatch matches = new MatOfDMatch();
-        //     matcher.match(frameDescriptors, smallerImageDescriptors, matches);
+            MatOfDMatch matches = new MatOfDMatch();
+            matcher.match(frameDescriptors, smallerImageDescriptors, matches);
 
-        //     // Filter matches by distance
-        //     List<DMatch> matchesList = matches.toList();
-        //     List<DMatch> goodMatchesList = new ArrayList<>();
-        //     for(DMatch match : matchesList) {
-        //         if(match.distance < 0.7 * match.distance) {
-        //             goodMatchesList.add(match);
-        //         }
-        //     }
+            // Filter matches by distance
+            List<DMatch> matchesList = matches.toList();
+            List<DMatch> goodMatchesList = new ArrayList<>();
+            for(DMatch match : matchesList) {
+                if(match.distance < 0.7 * match.distance) {
+                    goodMatchesList.add(match);
+                }
+            }
 
-        //     // If enough good matches, add to detected markers
-        //     if(goodMatchesList.size() > 5) {
-        //         detectedMarkers.put(url);
-        //     }
-        // }
+            // If enough good matches, add to detected markers
+            if(goodMatchesList.size() > 5) {
+                detectedMarkers.put(url);
+            }
+        }
 
         // Convert the frame to a JPEG image and then to Base64 string
         MatOfByte matOfByte = new MatOfByte();

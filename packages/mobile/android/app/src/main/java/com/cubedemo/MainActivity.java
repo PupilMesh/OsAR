@@ -16,6 +16,8 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Base64;
+
 
 import com.cubedemo.MarkerDetector;
 
@@ -91,6 +93,7 @@ public class MainActivity extends ReactActivity {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
       byte[] bytes = outputStream.toByteArray();
+      String data = Base64.encodeToString(bytes, Base64.DEFAULT);
 
       // PyObject result = markerDetectionFunction.call(bytes);
       // String jsonString = result.toString();
@@ -99,11 +102,11 @@ public class MainActivity extends ReactActivity {
 
       Mat frame = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC1);
       Utils.bitmapToMat(bitmap, frame);
-      Log.i(TAG,
-            "Frame created with dimensions: " + frame.width() + "x" + frame.height() + " and type: " + frame.type());
+      // Log.i(TAG,
+      //       "Frame created with dimensions: " + frame.width() + "x" + frame.height() + " and type: " + frame.type());
 
       String result = detector.detectMarker(frame);
-
+        Log.i(TAG, data.length() + "  " + result.length());
       // bytes = result.toJava(byte[].class);
       // Bitmap resultBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
@@ -147,7 +150,7 @@ public class MainActivity extends ReactActivity {
       ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA }, 20);
     } else if (!hasPermission) {
       Log.i(TAG, "Sent for permission");
-      permissionManager.requestCameraPermission(1008, 2137);
+      permissionManager.requestCameraPermission(1008, 2393);
     }
   }
 
