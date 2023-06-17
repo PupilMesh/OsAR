@@ -34,7 +34,7 @@ def find_image_in_image(img, template, ratio_threshold=0.7):
         return None
 
 # Initialize the USB camera
-cap = cv2.VideoCapture(cv2.CAP_DSHOW + 1)
+cap = cv2.VideoCapture(cv2.CAP_DSHOW + 0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 cap.set(cv2.CAP_PROP_FPS, 30)
