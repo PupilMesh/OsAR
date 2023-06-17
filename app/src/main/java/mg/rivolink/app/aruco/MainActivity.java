@@ -99,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 
 		renderer = new Renderer3D(this);
 
+		// add in multi-threading here, and the frame processing
+
 		SurfaceView surface = (SurfaceView)findViewById(R.id.main_surface);
 		surface.setTransparent(true);
 		surface.setSurfaceRenderer(renderer);
