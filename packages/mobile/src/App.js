@@ -51,8 +51,11 @@ export default function App() {
     const subscription = cameraEmitter.addListener('cameraFrame', event => {
       event = JSON.parse(event)
       let { marker_info, image } = event;
-      marker_info = JSON.parse(marker_info)
-      let detected_marker=marker_info['marker_id']
+      // setDebug(image);
+      // marker_info = JSON.parse(marker_info)
+      let detected_marker=""
+      if (marker_info.length != 0)
+        detected_marker=marker_info[0]['marker_id']
       // setDebug(detected_marker)
       // if (detected_marker == "image1") {
       //       setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",...modelUrls]);
@@ -93,8 +96,8 @@ export default function App() {
         });
       }
 
-
       const url = 'data:image/jpeg;base64,' + image;
+      // setDebug(url)
       setImageUris(prevUris => {
         const updatedUris = [...prevUris];
         updatedUris[currentFrame.current] = url;
@@ -119,7 +122,6 @@ export default function App() {
 
  
 
-    setUpdateIntervalForType(SensorTypes.gyroscope, 50);
       const intervalId = setInterval(() => {
           // Clear disk cache every 10 seconds
           FastImage.clearDiskCache();

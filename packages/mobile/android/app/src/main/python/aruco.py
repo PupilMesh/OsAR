@@ -74,10 +74,9 @@ def detect_marker(image_bytes, aruco_type):
 
     # decode the numpy array into an OpenCV image using cv2.imdecode()
     frame = cv2.imdecode(image_np, flags=cv2.IMREAD_COLOR)
-    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Detect and estimate pose of ArUco markers in the captured frame
-    output, marker_info = detect_and_estimate_marker_pose(gray_frame, aruco_dict_type, matrix_coefficients, distortion_coefficients)
+    output, marker_info = detect_and_estimate_marker_pose(frame, aruco_dict_type, matrix_coefficients, distortion_coefficients)  # Pass color image instead of grayscale
     
     retval, buffer = cv2.imencode('.jpeg', output)
     img_base64 = base64.b64encode(buffer).decode('utf-8')

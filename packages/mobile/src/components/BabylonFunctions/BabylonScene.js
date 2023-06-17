@@ -44,15 +44,15 @@ export default function BabylonScene({modelUrls}) {
     setCamera(camera);
 
     const light = new HemisphericLight('HemiLight', new Vector3(0, 9, -5), scene);
-    var dome = new PhotoDome(
-        "testdome",
-        "https://res.cloudinary.com/doblnhena/image/upload/v1684415267/360photo_mjy98u.jpg",
-        {
-            resolution: 32,
-            size: 1000
-        },
-        scene
-    );
+    // var dome = new PhotoDome(
+    //     "testdome",
+    //     "https://res.cloudinary.com/doblnhena/image/upload/v1684415267/360photo_mjy98u.jpg",
+    //     {
+    //         resolution: 32,
+    //         size: 1000
+    //     },
+    //     scene
+    // );
     console.log("ModelURLs" +modelUrls)
     modelUrls.forEach(model => {
     SceneLoader.ImportMesh("", model.modelUrl, "", scene, function (newMeshes) {
