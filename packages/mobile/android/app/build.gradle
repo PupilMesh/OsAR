@@ -147,6 +147,9 @@ android {
                 install "opencv-python"                 
             }
             pip{
+                 install "opencv-contrib-python==4.5.1.48"
+            }
+            pip{
                     install "numpy"  // Add any other Python packages your project requires
             }
         }

@@ -35,7 +35,7 @@ public class MainActivity extends ReactActivity {
   R100PermissionManager permissionManager;
   boolean hasCameraPermission = false;
   ManageExternalCamera externalCamera;
-
+  String ARUCO_TYPE = "DICT_4X4_50";
   private Python py;
   private PyObject markerDetectionFunction;
 
@@ -48,7 +48,7 @@ public class MainActivity extends ReactActivity {
       Python.start(new AndroidPlatform(this));
     }
   py=Python.getInstance();
-  markerDetectionFunction=py.getModule("image_process").get("detect_marker");
+  markerDetectionFunction=py.getModule("aruco").get("detect_marker");
   }
 
   @Override
@@ -71,8 +71,8 @@ public class MainActivity extends ReactActivity {
       byte[] bytes = outputStream.toByteArray();
       String data = Base64.encodeToString(bytes,Base64.DEFAULT);
 
-      // PyObject result = markerDetectionFunction.call(bytes);
-      // String jsonString = result.toString();
+      PyObject result = markerDetectionFunction.call(bytes,ARUCO_TYPE);
+      String jsonString = result.toString();
 
       // bytes = result.toJava(byte[].class);
       // Bitmap resultBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -89,8 +89,8 @@ public class MainActivity extends ReactActivity {
       // byte[] bytes = new byte[byteArraySize];
       // Arrays.fill(bytes, (byte) staticValue);
 
-      // CameraFrameModule.sendCameraFrame(jsonString);
-      CameraFrameModule.sendCameraFrame(data);
+      CameraFrameModule.sendCameraFrame(jsonString);
+      // CameraFrameModule.sendCameraFrame(data);
     }
 
     @Override

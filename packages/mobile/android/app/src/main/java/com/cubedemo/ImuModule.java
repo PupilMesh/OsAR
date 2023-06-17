@@ -38,14 +38,11 @@ public class ImuModule extends ReactContextBaseJavaModule{
         return "Imu";
     }
     
-    static public void sendImu(float[] data) {
-
+    static  public void sendImu(float[] data) {
         // String data = Base64.encodeToString(frame,Base64.DEFAULT);
         Log.d("CheckingIMU",data[0]+"");
         context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                // .emit("Imu",data[0]+","+ data[1]  );
-                .emit("Imu",data[0]+","+ data[1] + ","+ data[2] );
-                // .emit("Imu",data[0]+","+ data[1] + ","+ data[2] + ","+ data[3]  );
+                .emit("Imu",data[0]+","+ data[1] + ","+ data[2] + ","+ data[3]  );
     }
     @ReactMethod
     public void addListener(String eventName) {

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorManager;
 import android.hardware.SensorEventListener;
 import android.util.Log;
 import com.cubedemo.MobileIMUData;
@@ -24,45 +23,64 @@ public class MobileIMUData implements SensorEventListener {
     // ArrayList<String> velocityValues;
     String TAG="MobileIMU";
     Sensor accelerometer;
-
-    public MobileIMUData(Context context, Callback callback) {
+    public MobileIMUData(Context context,Callback callback) {
         this.callback = callback;
         this.context = context;
-        mSensorManager = (android.hardware.SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        // velocityValues= new ArrayList<>();
+        // velocityValues.add("a_x,a_y,a_z,TimeMillisecond \n" );
+        mSensorManager = (android.hardware.SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-        Log.i(TAG, "Constructor called");
+        Log.i(TAG,"Constructur called");
         mSensorManager.registerListener(this, accelerometer, android.hardware.SensorManager.SENSOR_DELAY_NORMAL);
+        
     }
-
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        Log.i(TAG, "" + sensorEvent.values + " " + sensorEvent.sensor.getType());
+      Log.i(TAG,""+sensorEvent.values+" "+sensorEvent.sensor.getType());
         startTime = System.currentTimeMillis();
-
-        // Calculate the rotation matrix
-        float[] rotationMatrix = new float[9];
-        SensorManager.getRotationMatrixFromVector(rotationMatrix, sensorEvent.values);
-
-        // Get the azimuth, pitch, and roll
-        float[] orientationValues = new float[3];
-        SensorManager.getOrientation(rotationMatrix, orientationValues);
-
-        // Convert to degrees
-        // for (int i = 0; i < orientationValues.length; i++) {
-        //     orientationValues[i] = (float) Math.toDegrees(orientationValues[i]);
+        // String data = "";
+        // for (int x = 0; x < sensorEvent.values.length; x++) {
+        //     data += sensorEvent.values[x] + ",";
         // }
+        // data += startTime + "\n";
+        callback.onCallback(sensorEvent.values);
 
-        // At this point, orientationValues[0] is the azimuth, orientationValues[1] is
-        // the pitch,
-        // and orientationValues[2] is the roll.
-
-        callback.onCallback(orientationValues);
+    //   velocityValues.add(data);
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
     }
+    public  void wirteCSV(ArrayList<String> name,String fileName){
+        try {
+
+            File file = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                file = new File(context.getExternalFilesDir(null).getAbsolutePath() +fileName);
+                Log.i(TAG," path"+ file.getAbsolutePath());
+            }
+            else {
+                file = new File(context.getExternalFilesDir(null).getAbsolutePath() +fileName);
+            }
+            // if file doesnt exists, then create it
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (int x=0;x<name.size();x++) {
+                bw.write(name.get(x));
+            }
+            bw.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
     public boolean close(){
+        // wirteCSV(velocityValues,"wakingWithMovile.csv");
         try {
             mSensorManager.unregisterListener(this);
             return true;
