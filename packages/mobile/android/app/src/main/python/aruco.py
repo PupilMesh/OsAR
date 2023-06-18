@@ -39,10 +39,10 @@ def detect_and_estimate_marker_pose(frame, aruco_dict_type, matrix_coefficients,
         for i in range(0, len(ids)):
             rvec, tvec, _ = cv2.aruco.estimatePoseSingleMarkers(corners[i], 0.02, matrix_coefficients, distortion_coefficients)
             cv2.aruco.drawDetectedMarkers(frame, corners)
-            cv2.drawFrameAxes(frame, matrix_coefficients, distortion_coefficients, rvec, tvec, 0.01)
+            # cv2.drawFrameAxes(frame, matrix_coefficients, distortion_coefficients, rvec, tvec, 0.01)
 
             # Calculate distance to camera
-            distance = np.linalg.norm(tvec)
+            # distance = np.linalg.norm(tvec)
 
             # Calculate rotation angle
             angle = cv2.norm(rvec)

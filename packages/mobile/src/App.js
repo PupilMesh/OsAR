@@ -51,12 +51,15 @@ export default function App() {
     const subscription = cameraEmitter.addListener('cameraFrame', event => {
       event = JSON.parse(event)
       let { marker_info, image } = event;
-      // setDebug(image);
+      setDebug(marker_info);
       // marker_info = JSON.parse(marker_info)
+
       let detected_marker=""
       if (marker_info.length != 0)
         detected_marker=marker_info[0]['marker_id']
-      // setDebug(detected_marker)
+        // setDebug(detected_marker + " Marker ")
+
+        // setDebug(detected_marker)
       // if (detected_marker == "image1") {
       //       setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",...modelUrls]);
       // } else if (detected_marker == "image2") {
@@ -97,7 +100,6 @@ export default function App() {
       }
 
       const url = 'data:image/jpeg;base64,' + image;
-      // setDebug(url)
       setImageUris(prevUris => {
         const updatedUris = [...prevUris];
         updatedUris[currentFrame.current] = url;
