@@ -67,7 +67,7 @@ public class MainActivity extends ReactActivity {
     public void onCameraFrame(Bitmap bitmap, long timestamp) {
 
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
+      bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream);
       byte[] bytes = outputStream.toByteArray();
       String data = Base64.encodeToString(bytes,Base64.DEFAULT);
 

@@ -77,9 +77,26 @@ def detect_marker(image_bytes, aruco_type):
 
     # Detect and estimate pose of ArUco markers in the captured frame
     output, marker_info = detect_and_estimate_marker_pose(frame, aruco_dict_type, matrix_coefficients, distortion_coefficients)  # Pass color image instead of grayscale
+     # Initialize marker info lists
+    marker_ids = []
+    distances = []
+    rotations = []
+    quaternions = []
     
+    # Fill marker info lists
+    for info in marker_info:
+        marker_ids.append(info["marker_id"])
+        distances.append(info["distance"])
+        rotations.append(info["rotation_angle"])
+        quaternions.append(info["quaternion"])
+
     retval, buffer = cv2.imencode('.jpeg', output)
     img_base64 = base64.b64encode(buffer).decode('utf-8')
-    result = {"image": img_base64, "marker_info": marker_info}
+    # result = {"image": img_base64, "marker_info": marker_info}
+    result = {"image": img_base64, 
+              "marker_ids": marker_ids,
+              "distances": distances,
+              "rotations": rotations,
+              "quaternions": quaternions}
     result_json_string = json.dumps(result)
     return result_json_string
