@@ -142,7 +142,7 @@ android {
         versionName "1.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
         python {
-            buildPython "C:/Python39/python.exe"  // Adjust the path to your Python interpreter
+            buildPython "C:/Users/Krishnan/AppData/Local/Programs/Python/Python38/python.exe"  // Adjust the path to your Python interpreter
             pip {
                 install "opencv-python"                 
             }

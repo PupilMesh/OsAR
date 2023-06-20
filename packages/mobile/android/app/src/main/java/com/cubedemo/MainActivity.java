@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Base64;
 
 import androidx.core.app.ActivityCompat;
@@ -73,7 +72,7 @@ public class MainActivity extends ReactActivity {
 
       PyObject result = markerDetectionFunction.call(bytes,ARUCO_TYPE);
       String jsonString = result.toString();
-
+      Log.i("JSON",jsonString);
       // bytes = result.toJava(byte[].class);
       // Bitmap resultBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 

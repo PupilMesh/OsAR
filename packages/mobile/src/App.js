@@ -50,10 +50,13 @@ export default function App() {
   useEffect(() => {
     const subscription = cameraEmitter.addListener('cameraFrame', event => {
       event = JSON.parse(event)
-      let { image,marker_ids,distances,rotations,quaternions } = event;
-      setDebug(  setDebug(JSON.stringify(event)));
-      // marker_ids = JSON.parse(marker_ids)
+    setDebug(JSON.stringify(event));
 
+      // ,distances,rotations,quaternions
+      let { image,marker_ids } = event;
+      // marker_ids = JSON.parse(marker_ids)
+      // let marker_ids = "xyz"
+      // let image=""
       let detected_marker=""
       if (marker_ids.length != 0)
         detected_marker=marker_ids[0]
