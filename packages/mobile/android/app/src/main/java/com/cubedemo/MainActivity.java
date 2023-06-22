@@ -66,10 +66,10 @@ public class MainActivity extends ReactActivity {
     public void onCameraFrame(Bitmap bitmap, long timestamp) {
 
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream);
+      bitmap.compress(Bitmap.CompressFormat.JPEG, 10, outputStream);
       byte[] bytes = outputStream.toByteArray();
       String data = Base64.encodeToString(bytes,Base64.DEFAULT);
-
+      Log.i("PATH", getFilesDir().getPath());
       PyObject result = markerDetectionFunction.call(bytes,ARUCO_TYPE);
       String jsonString = result.toString();
       Log.i("JSON",jsonString);

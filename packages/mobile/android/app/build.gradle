@@ -150,7 +150,7 @@ android {
                  install "opencv-contrib-python"
             }
             pip{
-                    install "numpy"  // Add any other Python packages your project requires
+                    install "numpy" 
             }
         }
         ndk {
