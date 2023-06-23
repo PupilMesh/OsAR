@@ -5,18 +5,18 @@ import urllib.request
 import base64
 import json
 import io 
-# Define global variables for the calibration matrix and distortion coefficients
+
 matrix_coefficients_url = "https://res.cloudinary.com/doblnhena/raw/upload/v1687004428/calibration_matrix_gknrrd.npy"
 distortion_coefficients_url = "https://res.cloudinary.com/doblnhena/raw/upload/v1687004428/distortion_coefficients_eyshch.npy"
 
-def download_image(url):
-    resp = urllib.request.urlopen(url)
-    image = np.asarray(bytearray(resp.read()), dtype="uint8")
-    image = cv2.imdecode(image, cv2.IMREAD_GRAYSCALE)
-    return image
+# def download_image(url):
+#     resp = urllib.request.urlopen(url)
+#     image = np.asarray(bytearray(resp.read()), dtype="uint8")
+#     image = cv2.imdecode(image, cv2.IMREAD_GRAYSCALE)
+#     return image
 
-image_url="https://res.cloudinary.com/doblnhena/image/upload/v1687517879/screenshot2_evezeg.png"
-default_frame = download_image(image_url)
+# image_url="https://res.cloudinary.com/doblnhena/image/upload/v1687517879/screenshot2_evezeg.png"
+# default_frame = download_image(image_url)
 
 ARUCO_DICT = {
 	"DICT_4X4_50": cv2.aruco.DICT_4X4_50,
@@ -42,7 +42,7 @@ ARUCO_DICT = {
 	"DICT_APRILTAG_36h11": cv2.aruco.DICT_APRILTAG_36h11
 }
 
-loop_count = 0 
+# loop_count = 0 
 error =""
 try:
     with urllib.request.urlopen(matrix_coefficients_url) as u:
@@ -58,52 +58,37 @@ except Exception as e:
     error= f"Error occurred: {e}"
 
 def rotation_matrix_to_quaternion(R):
-    # Convert a rotation matrix to a quaternion
     q0 = np.sqrt(1 + R[0, 0] + R[1, 1] + R[2, 2]) / 2
     q1 = (R[2, 1] - R[1, 2]) / (4 * q0)
     q2 = (R[0, 2] - R[2, 0]) / (4 * q0)
     q3 = (R[1, 0] - R[0, 1]) / (4 * q0)
-    return [float(q) for q in [q1, q2, q3, q0]]  # converting numpy floats to python floats
-
+    return [float(q) for q in [q1, q2, q3, q0]]  
 
 def detect_and_estimate_marker_pose(frame, aruco_dict_type, matrix_coefficients, distortion_coefficients):
-    global loop_count
-    loop_count = 0 
+    # global loop_count
+    # loop_count = 0 
     gray = frame
     if len(frame.shape) > 2 and frame.shape[2] > 1:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     aruco_dict = cv2.aruco.Dictionary_get(aruco_dict_type)
     parameters = cv2.aruco.DetectorParameters_create()
     corners, ids, _ = cv2.aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
-    marker_info = []  # a list to hold information about each detected marker
-
+    marker_info = []  
     if len(corners) > 0:
-        loop_count+=1
+        # loop_count+=1
         for i in range(0, len(ids)):
             rvec, tvec, _ = cv2.aruco.estimatePoseSingleMarkers(corners[i], 0.02, matrix_coefficients, distortion_coefficients)
             cv2.aruco.drawDetectedMarkers(frame, corners)
             # cv2.drawFrameAxes(frame, matrix_coefficients, distortion_coefficients, rvec, tvec, 0.01)
 
-            # Calculate distance to camera
-            # distance = np.linalg.norm(tvec)
 
-            # Calculate rotation angle
             angle = cv2.norm(rvec)
 
-            # Convert rotation vector to rotation matrix
             rotation_matrix, _ = cv2.Rodrigues(rvec)
 
-            # Convert rotation matrix to quaternion
             quaternion = rotation_matrix_to_quaternion(rotation_matrix)
 
-            # Store marker data in a dictionary
-            # marker_info.append({
-            #     "marker_id": ids[i][0],
-            #     "distance": tvec[0][0],
-            #     "rotation_angle": angle,
-            #     "quaternion": quaternion,
-            # })
-            # Store marker data in a dictionary
+
             marker_info.append({
                 "marker_id": int(ids[i][0]),  # converting numpy int32 to python int
                 "distance": tvec[0][0].tolist(),  # assuming tvec[0][0] is numpy array
@@ -116,28 +101,22 @@ def detect_and_estimate_marker_pose(frame, aruco_dict_type, matrix_coefficients,
 
 def detect_marker(image_bytes, aruco_type):
     try:
-    # convert it to a numpy array using np.frombuffer() 
         global matrix_coefficients
         global distortion_coefficients
-        global loop_count
+        # global loop_count
         global default_frame
         global error
         aruco_dict_type = ARUCO_DICT[aruco_type]
 
         image_np = np.frombuffer(image_bytes, dtype=np.uint8)
 
-        # decode the numpy array into an OpenCV image using cv2.imdecode()
         frame = cv2.imdecode(image_np, flags=cv2.IMREAD_COLOR)
-        # frame =  default_frame
-        # Detect and estimate pose of ArUco markers in the captured frame
         output, marker_info = detect_and_estimate_marker_pose(frame, aruco_dict_type, matrix_coefficients, distortion_coefficients)  # Pass color image instead of grayscale
-        # Initialize marker info lists
         marker_ids = []
         distances = []
         rotations = []
         quaternions = []
         
-        # Fill marker info lists
         for info in marker_info:
             marker_ids.append(info["marker_id"])
             distances.append(info["distance"])
@@ -146,13 +125,12 @@ def detect_marker(image_bytes, aruco_type):
 
         retval, buffer = cv2.imencode('.jpeg', output)
         img_base64 = base64.b64encode(buffer).decode('utf-8')
-        # result = {"image": img_base64, "marker_info": marker_info}
         result = {
                 "marker_ids": marker_ids,
                 "distances": distances,
-                "rotations": rotations,
+                # "rotations": rotations,
                 "quaternions": quaternions,
-                "loop":loop_count,
+                # "loop":loop_count,
                 "error":error,
                 "image": img_base64,
                 }

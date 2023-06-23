@@ -14,6 +14,7 @@ import { LogBox } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import BabylonScene from './components/BabylonFunctions/BabylonScene';
 
+import MarkerToModel from './MarkerMapping'
 
 
 LogBox.ignoreLogs([
@@ -53,57 +54,28 @@ export default function App() {
 
       event = JSON.parse(event)
 
-      // ,distances,rotations,quaternions
-      let { image,marker_ids } = event;
-      // marker_ids = JSON.parse(marker_ids)
-      // let marker_ids = "xyz"
-      // let image=""
-      let detected_marker=""
-      if (marker_ids.length != 0)
-        detected_marker=marker_ids[0]
-        // setDebug(detected_marker + " Marker ")
+      for (let i = 0; i < event["marker_ids"].length; i++){
 
-        // setDebug(detected_marker)
-      // if (detected_marker == "image1") {
-      //       setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",...modelUrls]);
-      // } else if (detected_marker == "image2") {
-      //       setModelUrls(["https://res.cloudinary.com/doblnhena/image/upload/v1683895925/model3_ufinmb.glb",...modelUrls]);
-      // }
-      if (detected_marker == "43") {
-        const newModel = {
-          modelUrl: "https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",
-          scale: [0.8, 0.8, 0.8],
-          position: [0, -10, 10],
-          rotation: [0, 0, 0] // replace with your desired rotation
-
-        };
-        setModelUrls(prevModels => {
-          if (!prevModels.find(model => model.modelUrl === newModel.modelUrl)) {
-            const newModels = [newModel,...prevModels];
-            if (newModels.length > 5) newModels.pop(); // keep only the last 5 models
-            return newModels;
-          }
-          return prevModels; // return the previous state if the model is already in the array
-        });
-      } else if (detected_marker == "42") {
-        const newModel = {
-          modelUrl: "https://res.cloudinary.com/doblnhena/image/upload/v1683895925/model3_ufinmb.glb",
-          scale: [0.8, 0.8, 0.8],
-          position: [0, -10, 10],
-          rotation: [0, 0, 0] // replace with your desired rotation
-
-        };
-        setModelUrls(prevModels => {
-          if (!prevModels.find(model => model.modelUrl === newModel.modelUrl)) {
-            const newModels = [newModel,...prevModels];
-            if (newModels.length > 5) newModels.pop(); // keep only the last 5 models
-            return newModels;
-          }
-          return prevModels; // return the previous state if the model is already in the array
-        });
+        let id = event["marker_ids"][i];
+        let distance = event["distances"][i];
+        let rotation = event["quaternions"][i];
+        const newModel = MarkerToModel[id];
+        if (newModel) {
+          newModel.distance = distance
+          newModel.rotation = rotation
+          setModelUrls(prevModels => {
+            if (!prevModels.find(model => model.modelUrl === newModel.modelUrl)) {
+              const newModels = [newModel, ...prevModels];
+              if (newModels.length > 5) newModels.pop(); // keep only the last 5 models
+              return newModels;
+            }
+            return prevModels; // return the previous state if the model is already in the array
+          });
+        }
       }
+      
 
-      const url = 'data:image/jpeg;base64,' + image;
+      const url = 'data:image/jpeg;base64,' + event["image"];
       setImageUris(prevUris => {
         const updatedUris = [...prevUris];
         updatedUris[currentFrame.current] = url;
@@ -129,10 +101,7 @@ export default function App() {
  
 
       const intervalId = setInterval(() => {
-          // Clear disk cache every 10 seconds
           FastImage.clearDiskCache();
-
-          // Clear memory cache every 10 seconds
           FastImage.clearMemoryCache();
         }, 10000);
 
