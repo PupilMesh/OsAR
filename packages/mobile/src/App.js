@@ -49,8 +49,9 @@ export default function App() {
 
   useEffect(() => {
     const subscription = cameraEmitter.addListener('cameraFrame', event => {
+      // setDebug(JSON.stringify(event));
+
       event = JSON.parse(event)
-      setDebug(event["loop"]);
 
       // ,distances,rotations,quaternions
       let { image,marker_ids } = event;
