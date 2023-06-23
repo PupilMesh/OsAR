@@ -50,7 +50,6 @@ export default function App() {
 
   useEffect(() => {
     const subscription = cameraEmitter.addListener('cameraFrame', event => {
-      // setDebug(JSON.stringify(event));
 
       event = JSON.parse(event)
 
@@ -61,6 +60,7 @@ export default function App() {
         let rotation = event["quaternions"][i];
         const newModel = MarkerToModel[id];
         if (newModel) {
+          setDebug("Model Added")
           newModel.distance = distance
           newModel.rotation = rotation
           setModelUrls(prevModels => {
