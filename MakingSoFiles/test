@@ -1,0 +1,13 @@
+cmake .. -G Ninja -DCMAKE_TOOLCHAIN_FILE:FILEPATH="C:\\Development\\ndk\\25.2.9519653\\build\\cmake\\android.toolchain.cmake" -DANDROID_PLATFORM=android-30  -DANDROID_STL=c++_shared -DCMAKE_ANDROID_ARCH_ABI="arm64-v8a;armeabi-v7a" -DANDROID_NATIVE_API_LEVEL=30
+
+// comand for android build
+cmake D:\opencv-4.6.0 -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE:FILEPATH="C:\\Development\\ndk\\21.4.7075529\\build\\cmake\\android.toolchain.cmake" -DANDROID_PLATFORM=android-30 -DANDROID_STL=c++_shared -DANDROID_NATIVE_API_LEVEL=30 -DBUILD_SHARED_LIBS=ON -DBUILD_opencv_python=OFF -DBUILD_opencv_java=OFF -DOPENCV_EXTRA_MODULES_PATH=D:\\opencv_contrib-4.6.0\\opencv_contrib-4.6.0\\modules -DANDROID_ABI=arm64-v8a -DBUILD_ANDROID_EXAMPLES=OFF -DBUILD_ANDROID_SERVICE=OFF
+cmake D:\opencv-4.6.0 -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=ON 
+cmake D:\opencv-4.6.0 -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=ON -DBUILD_opencv_python=OFF -DBUILD_opencv_java=OFF -DANDROID_STL=c++_shared -DOPENCV_EXTRA_MODULES_PATH=D:\\opencv_contrib-4.6.0\\opencv_contrib-4.6.0\\modules -DCMAKE_TOOLCHAIN_FILE="C:\\Development\\ndk\\21.4.7075529\\build\\cmake\\android.toolchain.cmake" -DANDROID_ABI=arm64-v8a -DANDROID_NATIVE_API_LEVEL=29 -DWITH_OPENCL=OFF -DWITH_IPP=OFF -DWITH_TBB=OFF -DWITH_PTHREADS_PF=OFF -DBUILD_ANDROID_PROJECTS=OFF -DBUILD_ANDROID_EXAMPLES=OFF -DBUILD_ANDROID_SERVICE=OFF  -DBUILD_DOCS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DENABLE_PRECOMPILED_HEADERS=OFF -DENABLE_FAST_MATH=OFF
+
+cmake -GNinja -DCMAKE_TOOLCHAIN_FILE="C:\\Development\\ndk\\25.2.9519653\\build\\cmake\\android.toolchain.cmake" -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-29 -DANDROID_STL=c++_shared  -DCMAKE_BUILD_TYPE=Release 
+
+//letest  working building android .so
+cmake .. -GNinja -DCMAKE_TOOLCHAIN_FILE="C:\\Development\\ndk\\25.2.9519653\\build\\cmake\\android.toolchain.cmake" -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-29 -DANDROID_STL=c++_shared  -DCMAKE_BUILD_TYPE=Release 
+//tring to build opencv for android
+cmake  D:\opencv-4.6.0 -GNinja -DCMAKE_TOOLCHAIN_FILE="C:\\Development\\ndk\\25.2.9519653\\build\\cmake\\android.toolchain.cmake" -DOPENCV_EXTRA_MODULES_PATH="D:\\opencv_contrib-4.6.0\\opencv_contrib-4.6.0\\modules" -DANDROID_STL=c++_shared -DANDROID_NATIVE_API_LEVEL=23 -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-29 -DCMAKE_BUILD_TYPE=Release  -D OPENCV_DISABLE_FILESYSTEM_SUPPORT=ON

@@ -1,0 +1,42 @@
+cmake_minimum_required(VERSION 3.19)
+
+# set the project name and version
+project(mylibrary VERSION 1.0)
+
+# set the C++ standard to use
+set(CMAKE_CXX_STANDARD 17)
+
+# set the Android API level and NDK version
+set(ANDROID_API_LEVEL 29)
+
+# set the path to the Android NDK
+set(ANDROID_NDK_PATH "C:\\Development\\ndk\\25.2.9519653")
+
+# set the path to the Android SDK
+set(ANDROID_SDK_PATH)
+
+# set the path to the toolchain file
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+set(ANDROID_TOOLCHAIN_FILE "${ANDROID_NDK_PATH}/build/cmake/android.toolchain.cmake")
+
+# set the target architecture
+set(ANDROID_ARCH_ABI "arm64-v8a")
+
+# set the path to the source files
+set(SOURCE_FILES src/demo.cpp)
+find_library(cxx-shared-lib c++_shared)
+
+# add the library target
+add_library(mylibrary SHARED ${SOURCE_FILES})
+
+# set the include directories
+target_include_directories(mylibrary PRIVATE ${ANDROID_NDK_PATH}/sysroot/usr/include/)
+
+# set the link libraries
+target_link_libraries(mylibrary android log ${cxx-shared-lib})
+
+# set the compiler flags
+target_compile_options(mylibrary PRIVATE -Wall -Werror)
+
+# set the output directory
+set_target_properties(mylibrary PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ARCH_ABI}")

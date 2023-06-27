@@ -1,0 +1,19 @@
+# ninja log v5
+28	280	7083551163833532	CMakeFiles/mylibrary.dir/src/log.cpp.o	dfefb220fc0259d9
+3052	3562	7083611584868852	D:/C++/testing/JniMakeing/src/main/jniLibs/arm64-v8a/libmylibrary.so	eeff6b9f9cfad1dd
+8	4053	7083551201521967	CMakeFiles/mylibrary.dir/src/aruco.cpp.o	44ef90fdc75d8afa
+23	3051	7083611581246426	CMakeFiles/mylibrary.dir/src/demo.cpp.o	1e3ae0a71a82f998
+8	3408	7083620950905628	CMakeFiles/mylibrary.dir/src/demo.cpp.o	1e3ae0a71a82f998
+3409	4060	7083620955523978	D:/C++/testing/JniMakeing/src/main/jniLibs/arm64-v8a/libmylibrary.so	eeff6b9f9cfad1dd
+23	3052	7083621706801782	CMakeFiles/mylibrary.dir/src/demo.cpp.o	1e3ae0a71a82f998
+3053	3569	7083621710248478	D:/C++/testing/JniMakeing/src/main/jniLibs/arm64-v8a/libmylibrary.so	eeff6b9f9cfad1dd
+24	3209	7083622764345840	CMakeFiles/mylibrary.dir/src/demo.cpp.o	1e3ae0a71a82f998
+3210	3796	7083622768393539	D:/C++/testing/JniMakeing/src/main/jniLibs/arm64-v8a/libmylibrary.so	eeff6b9f9cfad1dd
+22	3194	7083623668239463	CMakeFiles/mylibrary.dir/src/demo.cpp.o	1e3ae0a71a82f998
+3196	3713	7083623671691929	D:/C++/testing/JniMakeing/src/main/jniLibs/arm64-v8a/libmylibrary.so	eeff6b9f9cfad1dd
+12	4134	7083628581830491	CMakeFiles/mylibrary.dir/src/demo.cpp.o	1e3ae0a71a82f998
+4135	5091	7083628589460379	D:/C++/testing/JniMakeing/src/main/jniLibs/arm64-v8a/libmylibrary.so	eeff6b9f9cfad1dd
+24	3501	7083632135934112	CMakeFiles/mylibrary.dir/src/demo.cpp.o	1e3ae0a71a82f998
+3504	4141	7083632140421337	D:/C++/testing/JniMakeing/src/main/jniLibs/arm64-v8a/libmylibrary.so	eeff6b9f9cfad1dd
+9	3027	7083634835710502	CMakeFiles/mylibrary.dir/src/demo.cpp.o	1e3ae0a71a82f998
+3028	3559	7083634839384894	D:/C++/testing/JniMakeing/src/main/jniLibs/arm64-v8a/libmylibrary.so	eeff6b9f9cfad1dd
