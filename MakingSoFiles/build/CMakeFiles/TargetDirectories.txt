@@ -1,0 +1,3 @@
+D:/C++/testing/JniMakeing/build/CMakeFiles/mylibrary.dir
+D:/C++/testing/JniMakeing/build/CMakeFiles/edit_cache.dir
+D:/C++/testing/JniMakeing/build/CMakeFiles/rebuild_cache.dir
