@@ -7,6 +7,10 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
   return StyleSheet.create({
+    Parent : {
+    transform: [{ rotateZ: '90deg'}], // Add this line to rotate view
+
+    },
     Overlay_Root: {
       position: 'absolute',
       top: 0,

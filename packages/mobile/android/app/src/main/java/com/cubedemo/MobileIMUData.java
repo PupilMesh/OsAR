@@ -51,36 +51,8 @@ public class MobileIMUData implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
     }
-    public  void wirteCSV(ArrayList<String> name,String fileName){
-        try {
-
-            File file = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-                file = new File(context.getExternalFilesDir(null).getAbsolutePath() +fileName);
-                Log.i(TAG," path"+ file.getAbsolutePath());
-            }
-            else {
-                file = new File(context.getExternalFilesDir(null).getAbsolutePath() +fileName);
-            }
-            // if file doesnt exists, then create it
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-            for (int x=0;x<name.size();x++) {
-                bw.write(name.get(x));
-            }
-            bw.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
+    
     public boolean close(){
-        // wirteCSV(velocityValues,"wakingWithMovile.csv");
         try {
             mSensorManager.unregisterListener(this);
             return true;

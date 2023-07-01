@@ -5,20 +5,20 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useState, useEffect } from 'react';
-import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Quaternion, Scene, StandardMaterial, UniversalCamera, Vector3, PhotoDome, Vector4 } from '@babylonjs/core';
+import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Quaternion, Scene, UniversalCamera, Vector3, PhotoDome, Vector4 } from '@babylonjs/core';
 import GLRenderer from '../GLRenderer';
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import "@babylonjs/loaders/glTF";
-import { gyroscope } from 'react-native-sensors';
-import { StatusBar, View, Text, Platform, NativeEventEmitter, NativeModules, Image } from 'react-native';
+import useStyles from '../../styles';
+import { Button, View, Text, NativeEventEmitter, NativeModules } from 'react-native';
 const Imu  = NativeModules.Imu;
 const imuEmitter = new NativeEventEmitter(Imu);
 
 export default function BabylonScene({modelUrls}) {
   const [camera, setCamera] = useState(null);
-
+// TODO Change the IMU from the current init value and not default values
+  // Add multipler for position distance, the distance value is in same units as the marker size given in aruco.py code, so add multiplier for it
   useEffect(() => {
-
   imuEmitter.addListener('Imu', (event) => {
       let array = event.split(",")
     if (camera) {
@@ -34,7 +34,11 @@ export default function BabylonScene({modelUrls}) {
     return () => {
     }
   }, [camera]);
-
+  const setCameraToZero= ()=>{
+    if (camera) {
+      camera.rotation = new Vector3(0, 0, 0);
+    }
+  }
   const onCreateEngine = useCallback((engine) => {
     if (!engine) return;
 
@@ -77,10 +81,15 @@ export default function BabylonScene({modelUrls}) {
       engine.dispose();
     };
   }, [modelUrls]); 
-
+  const styles = useStyles();
   return (
     <>
       <GLRenderer onCreateEngine={onCreateEngine} />
+      <View style={styles.Overlay_Root}>
+          <View style={{ marginHorizontal:40,padding: 20 }}>
+            <Button title="ReCalibrate" onPress={setCameraToZero} />
+          </View>
+      </View>
     </>
   )
 }   
