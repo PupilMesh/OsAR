@@ -23,7 +23,10 @@ export default function BabylonScene({modelUrls}) {
       let array = event.split(",")
     if (camera) {
         const quaternion = new Quaternion(parseFloat(array[0]),parseFloat(array[1]),parseFloat(array[2]),parseFloat(array[3])); // use the values from the rotation vector sensor
-        const euler = quaternion.toEulerAngles();    
+        const euler = quaternion.toEulerAngles();   
+        euler._x=-euler._x
+        euler._y=-euler._y
+        euler._z=-euler._z
         camera.rotation = euler;  
       }
     });
@@ -44,15 +47,15 @@ export default function BabylonScene({modelUrls}) {
     setCamera(camera);
 
     const light = new HemisphericLight('HemiLight', new Vector3(0, 9, -5), scene);
-    // var dome = new PhotoDome(
-    //     "testdome",
-    //     "https://res.cloudinary.com/doblnhena/image/upload/v1684415267/360photo_mjy98u.jpg",
-    //     {
-    //         resolution: 32,
-    //         size: 1000
-    //     },
-    //     scene
-    // );
+    var dome = new PhotoDome(
+        "testdome",
+        "https://res.cloudinary.com/doblnhena/image/upload/v1688242133/360-panorama-matador-seo_dsfsee.jpg",
+        {
+            resolution: 32,
+            size: 1000
+        },
+        scene
+    );
     console.log("ModelURLs" +modelUrls)
     modelUrls.forEach(model => {
     SceneLoader.ImportMesh("", model.modelUrl, "", scene, function (newMeshes) {
