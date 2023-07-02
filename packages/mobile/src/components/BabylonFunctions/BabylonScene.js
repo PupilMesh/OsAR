@@ -30,9 +30,9 @@ export default function BabylonScene({modelUrls}) {
       if (camera) {
         const quaternion = new Quaternion(parseFloat(array[0]),parseFloat(array[1]),parseFloat(array[2]),parseFloat(array[3])); 
         if (referenceQuaternion) {
-          const relativeQuaternion = referenceQuaternion.conjugate().multiply(quaternion);
-          const euler = relativeQuaternion.toEulerAngles();   
-          // const euler = quaternion.toEulerAngles();   
+          // const relativeQuaternion = referenceQuaternion.conjugate().multiply(quaternion);
+          // const euler = relativeQuaternion.toEulerAngles();   
+          const euler = quaternion.toEulerAngles();   
           euler._x = -euler._x;
           // euler._y = -euler._y;
           euler._z = -euler._z;
