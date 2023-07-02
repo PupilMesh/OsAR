@@ -1,3 +1,9 @@
+// TODO Change the IMU from the current init value and not default values
+  // Add multipler for position distance, the distance value is in same units as the marker size given in aruco.py code, so add multiplier for it
+  // TODO Fix rotation for new orientation
+  // Add loading GLB from Local Storage
+  
+
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
@@ -16,27 +22,46 @@ const imuEmitter = new NativeEventEmitter(Imu);
 
 export default function BabylonScene({modelUrls}) {
   const [camera, setCamera] = useState(null);
-// TODO Change the IMU from the current init value and not default values
-  // Add multipler for position distance, the distance value is in same units as the marker size given in aruco.py code, so add multiplier for it
+  const [referenceQuaternion, setReferenceQuaternion] = useState(null);
+  const [debug,setDebug] = useState("Debg")
   useEffect(() => {
-  imuEmitter.addListener('Imu', (event) => {
+    imuEmitter.addListener('Imu', (event) => {
       let array = event.split(",")
-    if (camera) {
-        const quaternion = new Quaternion(parseFloat(array[0]),parseFloat(array[1]),parseFloat(array[2]),parseFloat(array[3])); // use the values from the rotation vector sensor
-        const euler = quaternion.toEulerAngles();   
-        euler._x=-euler._x
-        euler._y=-euler._y
-        euler._z=-euler._z
-        camera.rotation = euler;  
+      if (camera) {
+        const quaternion = new Quaternion(parseFloat(array[0]),parseFloat(array[1]),parseFloat(array[2]),parseFloat(array[3])); 
+        if (referenceQuaternion) {
+          const relativeQuaternion = referenceQuaternion.conjugate().multiply(quaternion);
+          const euler = relativeQuaternion.toEulerAngles();   
+          // const euler = quaternion.toEulerAngles();   
+          euler._x = -euler._x;
+          // euler._y = -euler._y;
+          euler._z = -euler._z;
+          // for landscape orientation
+          let x_r = euler._x
+          let y_r = euler._y
+          euler._x = y_r;
+          euler._y = x_r;
+
+          camera.rotation = euler; 
+          setDebug(euler._x+" "+euler._y+" "+euler._z+" ")
+        } else {
+          // Set the initial reference quaternion
+          setReferenceQuaternion(quaternion);
+        }
       }
     });
 
     return () => {
     }
-  }, [camera]);
-  const setCameraToZero= ()=>{
+  }, [camera, referenceQuaternion]);
+
+  const recalibrate = () => {
     if (camera) {
+      // Reset the camera rotation
       camera.rotation = new Vector3(0, 0, 0);
+
+      // Reset the reference quaternion
+      setReferenceQuaternion(null);
     }
   }
   const onCreateEngine = useCallback((engine) => {
@@ -67,8 +92,6 @@ export default function BabylonScene({modelUrls}) {
       root.position.set(model.position[0], model.position[1], model.position[2]); 
       root.scaling = new Vector3(model.scale[0], model.scale[1], model.scale[2]); 
       root.rotationQuaternion = new Quaternion(model.rotation[0], model.rotation[1], model.rotation[2],model.rotation[3]);
-      
-      // root.rotationQuaternion = Quaternion.FromEulerAngles(model.rotation[0], model.rotation[1], model.rotation[2]);
     });
   });
     engine.runRenderLoop(function () {
@@ -87,9 +110,14 @@ export default function BabylonScene({modelUrls}) {
       <GLRenderer onCreateEngine={onCreateEngine} />
       <View style={styles.Overlay_Root}>
           <View style={{ marginHorizontal:40,padding: 20 }}>
-            <Button title="ReCalibrate" onPress={setCameraToZero} />
-          </View>
+            <Button title="Recalibrate" onPress={recalibrate} />
+        </View>
+        <Text>
+            {debug}
+        </Text>
       </View>
     </>
   )
-}   
+}  
+
+
