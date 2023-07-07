@@ -3,3 +3,4 @@ packages/
 MakingSoFiles/
 IMUDataFatching/
 ARucoMarker/
+node_modules
