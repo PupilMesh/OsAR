@@ -32,6 +32,8 @@ import com.serenegiant.usb.UVCCamera;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class ManageExternalCamera implements CameraDialog.CameraDialogParent {
@@ -181,24 +183,42 @@ public class ManageExternalCamera implements CameraDialog.CameraDialogParent {
         if (mUVCCamera == null) {
             // i change activity of context
             setCamera();
-            Log.i(TAG, "Camera not null");
+
         } else {
             Log.i(TAG,"Called From openCamera");
             releaseCamera();
         }
     }
     public void setCamera() {
-        final List<DeviceFilter> filter = DeviceFilter.getDeviceFilters(activity, com.serenegiant.uvccamera.R.xml.device_filter);
-        List<UsbDevice> list =mUsbMonitor.getDeviceList(filter.get(0));
-        Log.i(TAG,list.toString());
-        if(list.size()>0) {
-            UsbDevice device = list.get(0);
+//        final List<DeviceFilter> filter = DeviceFilter.getDeviceFilters(activity, com.serenegiant.uvccamera.R.xml.device_filter);
+//        List<UsbDevice> list =mUsbMonitor.getDeviceList(filter.get(0));
+//        Log.i(TAG,list.toString()+" Device getting");
+//        Log.i(TAG," Device got done");
+//
+//
+//        if(list.size()>0) {
+// The ID should be 0 when debugging with usb webcam, it is currently not dynamic
+//            Reassign to the position in the list for camera
+//            UsbDevice device = list.get(2);
             UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
-            PendingIntent mPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent("com.serenegiant.USB_PERMISSION"), PendingIntent.FLAG_MUTABLE);
-            manager.requestPermission(device, mPermissionIntent);
+            HashMap<String, UsbDevice> deviceList = manager.getDeviceList();
+            Log.i(TAG,"devic List"+deviceList.toString());
+            Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
+
+            while (deviceIterator.hasNext()) {
+                UsbDevice device = deviceIterator.next();
+                if(device.getProductId() == 10842 && device.getVendorId() == 4346) {
+//                    usbDevice = device; // This is H ID/CDC device
+                    if (device != null) {
+                            PendingIntent mPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent("com.serenegiant.USB_PERMISSION"), PendingIntent.FLAG_MUTABLE);
+                            manager.requestPermission(device, mPermissionIntent);
+                        }
+
+                }
+            }
+
         }
 
-    }
 
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override

@@ -278,7 +278,7 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation project(path: ':libuvccamera')
-
+     implementation files("C:\\Users\\Krishnan\\Desktop\\PupilMesh\\PMeshRepo\\OsAR\\packages\\mobile\\android\\app\\src\\main\\jni\\BasicFunctionSDK_1.2.1.aar")
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
     }

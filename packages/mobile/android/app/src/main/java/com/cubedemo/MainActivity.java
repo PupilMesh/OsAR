@@ -116,7 +116,12 @@ public class MainActivity extends ReactActivity {
       ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA }, 20);
     } else if (!hasPermission) {
       Log.i(TAG, "Sent for permission");
-      permissionManager.requestCameraPermission(1008, 2393);
+      // w200 Webcam (vendID, prodID)
+      //  permissionManager.requestCameraPermission(1008, 2393);
+
+      // Sample AR Glass
+      permissionManager.requestCameraPermission(4346,10842);
+
     }
   }
 

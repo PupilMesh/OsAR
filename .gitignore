@@ -15,3 +15,6 @@ venv
 __pycache__
 AruCO
 notes.txt
+BasicFunctionSDK_1.2.1.aar
+DeviceIMU.java
+IMUCallback.java

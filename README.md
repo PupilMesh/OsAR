@@ -32,7 +32,10 @@ Follow these instructions to set up and run the OSAR project on your local machi
 3. Update the JPEG compression quality in `MainActivity.java` based on device capablity.
 4. The frame buffer size from `/packages/mobile/src/BabylonFunctions/BabylonScene.js` can also be updated based on need. 
 5. Update the python executable path for buildPython property in `\packages\mobile\android\app\build.gradle`  
+6. Add code for IMU in `packages\mobile\android\app\src\main\java\com\cubedemo\IMU` with call back handled in MobileIMUData.java
 
+<!-- TODO change this  -->
+7. Add BasicFunctionSDK_1.2.1.aar in `\packages\mobile\android\app\build.gradle` which is Device specific IMU thing. Add it in JNI folder.
 
 #### Running the Project
 
