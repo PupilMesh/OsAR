@@ -31,6 +31,7 @@ Follow these instructions to set up and run the OSAR project on your local machi
 2. Update the VendorID and ProductID of your USB camera in `packages/mobile/android/app/src/main/java/com/cubedemo/MainActivity.java`.
 3. Update the JPEG compression quality in `MainActivity.java` based on device capablity.
 4. The frame buffer size from `/packages/mobile/src/BabylonFunctions/BabylonScene.js` can also be updated based on need. 
+5. Update the python executable path for buildPython property in `\packages\mobile\android\app\build.gradle`  
 
 
 #### Running the Project

@@ -4,8 +4,8 @@ var MarkerToModel = {
     id:"42",
     modelUrl: "https://res.cloudinary.com/doblnhena/image/upload/v1683895843/model1_yprz3d.glb",
     scale: [1.8, 1.8, 1.8],
-    position: [2  , -10, 10],
-    rotation: [0, 0, 0]
+    position: [2  , -10, 10], // dummy values
+    rotation: [0, 0, 0]// dummy values
   },
   "43": {
     id:"43",

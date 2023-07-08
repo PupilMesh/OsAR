@@ -4,9 +4,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import React, { useCallback, useEffect, useRef } from 'react';
-import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Scene, StandardMaterial, UniversalCamera, Vector3 } from '@babylonjs/core';
-import { StatusBar, View, Text, Platform, NativeEventEmitter, NativeModules, Image } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { StatusBar, View, Text, NativeEventEmitter, NativeModules } from 'react-native';
 import useStyles from './styles';
 import { useState } from 'react';
 import { LogBox } from 'react-native';
