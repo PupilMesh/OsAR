@@ -1,13 +1,14 @@
 package mg.rivolink.app.aruco;
 
+import static mg.rivolink.app.aruco.renderer.utils.CameraParameters.setLoad;
+
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.DialogInterface;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -16,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import mg.rivolink.app.aruco.renderer.Renderer3D;
-import mg.rivolink.app.aruco.utils.CameraParameters;
+import mg.rivolink.app.aruco.renderer.utils.CameraParameters;
 import mg.rivolink.app.aruco.view.PortraitCameraLayout;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -38,17 +39,17 @@ import org.opencv.core.Point;
 import org.opencv.core.Point3;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-
 import org.rajawali3d.view.SurfaceView;
 
-public class MainActivity extends AppCompatActivity implements CvCameraViewListener2 {
 
+public class MainActivity extends AppCompatActivity implements CvCameraViewListener2 {
 	public static final float SIZE = 0.04f;
 
 	private Mat cameraMatrix;
 	private MatOfDouble distCoeffs;
 
-	private Mat rgb;
+	public Mat rgb;
+	private boolean isRunning = false;
 	private Mat gray;
 
 	private Mat rvecs;
@@ -70,13 +71,17 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 
 				cameraMatrix = Mat.eye(3, 3, CvType.CV_64FC1);
 				distCoeffs = new MatOfDouble(Mat.zeros(5, 1, CvType.CV_64FC1));
+				setLoad();
 
-				if(CameraParameters.fileExists(activity)){
-					CameraParameters.tryLoad(activity, cameraMatrix, distCoeffs);
-				}
-				else {
-					CameraParameters.selectFile(activity);
-				}
+				double[] cmdata = new double[]{
+					1237.5201888491065,0.0,549.2419674255135,0.0,1340.8775773435984,1072.538177539563,0.0,0.0,1.0
+				};
+				double[] dcdata = new double[]{
+					0.02101134272881212,0.6981242376794832,-0.061819162040075315,-8.069517868665383E-4,-1.373537063628747
+				};
+
+				cameraMatrix.put(0, 0, cmdata);
+				distCoeffs.put(0, 0, dcdata);
 
 				camera.enableView();
 			}
@@ -88,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
+
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -141,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 	@Override
 	public void onCameraViewStarted(int width, int height){
 		rgb = new Mat();
+		ids = new MatOfInt();
 		corners = new LinkedList<>();
 		parameters = DetectorParameters.create();
 		dictionary = Aruco.getPredefinedDictionary(Aruco.DICT_6X6_50);
@@ -148,37 +155,39 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 
 	@Override
 	public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame){
-		if(!CameraParameters.isLoaded()){
-			return inputFrame.rgba();
-		}
-
 		Imgproc.cvtColor(inputFrame.rgba(), rgb, Imgproc.COLOR_RGBA2RGB);
 		gray = inputFrame.gray();
 
-		ids = new MatOfInt();
-		corners.clear();
+		if (!isRunning){
+			isRunning = true;
+			t1.start();
+		}
+//		Log.i("DBG-THD", "TC:: " + Thread.currentThread());
+		return rgb;
+	}
 
+	private void arucoDetectionAsync(Mat cameraMatrix, MatOfDouble distCoeffs, Dictionary dictionary, DetectorParameters parameters, MatOfInt ids, List<Mat> corners) {
+		//TODO: start MT here
+//		corners.clear();
 		Aruco.detectMarkers(gray, dictionary, corners, ids, parameters);
-
+		rvecs = new Mat();
+		tvecs = new Mat();
+		Aruco.drawDetectedMarkers(rgb, corners, ids);
 		if(corners.size()>0){
-			Aruco.drawDetectedMarkers(rgb, corners, ids);
-
-			rvecs = new Mat();
-			tvecs = new Mat();
-
 			Aruco.estimatePoseSingleMarkers(corners, SIZE, cameraMatrix, distCoeffs, rvecs, tvecs);
 			for(int i = 0;i<ids.toArray().length;i++){
-				draw3dCube(rgb, cameraMatrix, distCoeffs, rvecs.row(i), tvecs.row(i), new Scalar(255, 0, 0));
+//				draw3dCube(rgb, cameraMatrix, distCoeffs, rvecs.row(i), tvecs.row(i), new Scalar(255, 0, 0));
+				// this point dictates the "cube" rendering through image processing
 				Aruco.drawAxis(rgb, cameraMatrix, distCoeffs, rvecs.row(i), tvecs.row(i), SIZE/2.0f);
 			}
 		}
-
-		return rgb;
+		camera.deliverAndDrawFrame(rgb);
 	}
 
 	@Override
 	public void onCameraViewStopped(){
 		rgb.release();
+		isRunning = false;
 	}
 
 	public void draw3dCube(Mat frame, Mat cameraMatrix, MatOfDouble distCoeffs, Mat rvec, Mat tvec, Scalar color){
@@ -225,7 +234,16 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 			}
 		});
 	}
-
+	
+	Thread t1 = new Thread(new Runnable() {
+		@Override
+		public void run() {
+			Thread.currentThread().setPriority(10);
+			while (true) {
+				arucoDetectionAsync(cameraMatrix, distCoeffs, dictionary, parameters, ids, corners);
+			}
+		}
+	});
 }
 
 
