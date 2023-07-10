@@ -23,6 +23,7 @@ import java.net.URL;
 public class ImuModule extends ReactContextBaseJavaModule{
     static ReactApplicationContext context;
     MobileIMUData data;
+
     public ImuModule(@Nullable ReactApplicationContext reactContext) {
         super(reactContext);
         Log.d("CheckingIMU", "IMUModule Const");
@@ -37,10 +38,10 @@ public class ImuModule extends ReactContextBaseJavaModule{
     public String getName() {
         return "Imu";
     }
-    
+
     static  public void sendImu(float[] data) {
         // String data = Base64.encodeToString(frame,Base64.DEFAULT);
-        Log.d("CheckingIMU",data[0]+"");
+        Log.d("CheckingIMU","Imu"+data[0]+","+ data[1] + ","+ data[2] + ","+ data[3] );
         context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit("Imu",data[0]+","+ data[1] + ","+ data[2] + ","+ data[3]  );
     }
@@ -55,9 +56,16 @@ public class ImuModule extends ReactContextBaseJavaModule{
     }
 
     Callback callback = new Callback() {
+        int count =0;
         @Override
         public void onCallback(float[] array) {
-        sendImu(array);
+            if(count<20){
+                count=count+1;
+                return;
+            }else{
+                sendImu(array);
+                count=0;
+            }
         }
     };
 }

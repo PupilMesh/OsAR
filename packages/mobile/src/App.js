@@ -57,26 +57,43 @@ export default function App() {
       event = JSON.parse(event)
 
       for (let i = 0; i < event["marker_ids"].length; i++){
+    let id = event["marker_ids"][i];
+    let distance = event["distances"][i];
+    let rotation = event["quaternions"][i];
+    const newModel = MarkerToModel[id];
+    
+    if (newModel) {
+        setDebug("Model Added")
+        newModel.position = distance
+        newModel.rotation = rotation
+        setDebug("Model Added "+newModel.id+" "+newModel.position)
+        
+        setModelUrls(prevModels => {
+            // Check if the model is already in the array
+            const modelIndex = prevModels.findIndex(model => model.modelUrl === newModel.modelUrl);
 
-        let id = event["marker_ids"][i];
-        let distance = event["distances"][i];
-        let rotation = event["quaternions"][i];
-        const newModel = MarkerToModel[id];
-        if (newModel) {
-          setDebug("Model Added")
-          newModel.position = distance
-          newModel.rotation = rotation
-          setDebug("Model Added "+newModel.id+" "+newModel.position)
-          setModelUrls(prevModels => {
-            if (!prevModels.find(model => model.modelUrl === newModel.modelUrl)) {
-              const newModels = [newModel, ...prevModels];
-              if (newModels.length > 5) newModels.pop(); // keep only the last 5 models
-              return newModels;
+            // If the model is not present, add it to the array
+            if (modelIndex === -1) {
+                const newModels = [newModel, ...prevModels];
+                if (newModels.length > 5) newModels.pop(); // keep only the last 5 models
+                return newModels;
+            } else {
+                // If the model is present, update its position and rotation
+                return prevModels.map((model, index) => {
+                    if (index === modelIndex) {
+                        return {
+                            ...model,
+                            position: newModel.position, // Update position
+                            rotation: newModel.rotation  // Update rotation
+                        };
+                    }
+                    return model; // Return the original model if it doesn't match the new model
+                });
             }
-            return prevModels; // return the previous state if the model is already in the array
-          });
-        }
-      }
+        });
+    }
+}
+
       
 
       const url = 'data:image/jpeg;base64,' + event["image"];

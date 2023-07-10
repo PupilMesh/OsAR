@@ -79,7 +79,7 @@ def detect_and_estimate_marker_pose(frame, aruco_dict_type, matrix_coefficients,
         for i in range(0, len(ids)):
             cv2.aruco.drawDetectedMarkers(frame, corners)
             # cv2.drawFrameAxes(frame, matrix_coefficients, distortion_coefficients, rvec, tvec, 0.01)
-            rvec, tvec, _ = cv2.aruco.estimatePoseSingleMarkers(corners[i], 0.08, matrix_coefficients, distortion_coefficients)
+            rvec, tvec, _ = cv2.aruco.estimatePoseSingleMarkers(corners[i], 0.02, matrix_coefficients, distortion_coefficients)
 
 
             angle = cv2.norm(rvec)

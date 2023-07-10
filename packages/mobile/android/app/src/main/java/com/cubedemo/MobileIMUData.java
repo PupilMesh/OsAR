@@ -64,10 +64,9 @@ public class MobileIMUData implements SensorEventListener, IMUCallback {
 
     @Override
     public void onCallback(float[] floats, int i, int i1) {
-//        variable i gives the type of value, it can be Rotation or Gyroscope, when its 11, its rotation
-//        Quarterian
-        Log.d(TAG,floats[0]+" "+floats[1]+" "+floats[2]+" "+floats[3]);
+//        variable i gives the type of value, it can be Rotation or Gyroscope, when its 11, its rotation Quarterian
         if(i==11) {
+            Log.d(TAG,floats[0]+" "+floats[1]+" "+floats[2]+" "+floats[3]);
             callback.onCallback(floats);
         }
     }

@@ -10,8 +10,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useCallback, useState, useEffect, useRef } from 'react';
-import { Color4, HemisphericLight,Quaternion, Scene, UniversalCamera, Vector3, PhotoDome } from '@babylonjs/core';
+import React, { useCallback, useState, useEffect } from 'react';
+import { Behavior, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Node, Nullable, Observer, Quaternion, Scene, UniversalCamera, Vector3, PhotoDome, Vector4 } from '@babylonjs/core';
 import GLRenderer from '../GLRenderer';
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import "@babylonjs/loaders/glTF";
@@ -22,16 +22,15 @@ const imuEmitter = new NativeEventEmitter(Imu);
 
 export default function BabylonScene({modelUrls}) {
   const [camera, setCamera] = useState(null);
-  const [referenceQuaternion, setReferenceQuaternion] = useState(null);
   const [debug,setDebug] = useState("Debg")
-  const meshesRef = useRef([]);
-
   useEffect(() => {
     imuEmitter.addListener('Imu', (event) => {
       let array = event.split(",")
+      console.log("Outside"+ array[0])
       if (camera) {
+              console.log(array)
+
         const quaternion = new Quaternion(parseFloat(array[0]),parseFloat(array[1]),parseFloat(array[2]),parseFloat(array[3])); 
-        if (referenceQuaternion) {
           // const relativeQuaternion = referenceQuaternion.conjugate().multiply(quaternion);
           // const euler = relativeQuaternion.toEulerAngles();   
           const euler = quaternion.toEulerAngles();   
@@ -46,26 +45,15 @@ export default function BabylonScene({modelUrls}) {
 
           camera.rotation = euler; 
           setDebug(euler._x+" "+euler._y+" "+euler._z+" ")
-        } else {
-          // Set the initial reference quaternion
-          setReferenceQuaternion(quaternion);
-        }
+        
       }
     });
 
     return () => {
     }
-  }, [camera, referenceQuaternion]);
+  }, [camera]);
 
-  const recalibrate = () => {
-    if (camera) {
-      // Reset the camera rotation
-      camera.rotation = new Vector3(0, 0, 0);
-
-      // Reset the reference quaternion
-      setReferenceQuaternion(null);
-    }
-  }
+ 
   const onCreateEngine = useCallback((engine) => {
     if (!engine) return;
 
@@ -80,60 +68,36 @@ export default function BabylonScene({modelUrls}) {
     const light = new HemisphericLight('HemiLight', new Vector3(0, 9, -5), scene);
     var dome = new PhotoDome(
         "testdome",
-        "https://res.cloudinary.com/doblnhena/image/upload/v1688242133/360-panorama-matador-seo_dsfsee.jpg",
+        "https://res.cloudinary.com/doblnhena/image/upload/v1684415267/360photo_mjy98u.jpg",
         {
             resolution: 32,
             size: 1000
         },
         scene
     );
-    console.log("ModelURLs" +modelUrls)
     modelUrls.forEach(model => {
-      SceneLoader.ImportMesh("", model.modelUrl, "", scene, function (newMeshes) {
-        const root = newMeshes[0];
-        root.position.set(model.position[0], model.position[1], model.position[2]);
-        root.scaling = new Vector3(model.scale[0], model.scale[1], model.scale[2]);
-        root.rotationQuaternion = new Quaternion(model.rotation[0], model.rotation[1], model.rotation[2], model.rotation[3]);
-        
-        // Push the root mesh to our ref array
-        meshesRef.current.push(root);
-      });
+    SceneLoader.ImportMesh("", model.modelUrl, "", scene, function (newMeshes) {
+      const root = newMeshes[0];
+      root.position.set(model.position[0], model.position[1], model.position[2]); 
+      root.scaling = new Vector3(model.scale[0], model.scale[1], model.scale[2]); 
+      root.rotationQuaternion = new Quaternion(model.rotation[0], model.rotation[1], model.rotation[2],model.rotation[3]);
     });
+  });
     engine.runRenderLoop(function () {
       if (scene && scene.activeCamera) scene.render();
     });
 
     return () => {
-      meshesRef.current.forEach(mesh => mesh.dispose());
-      meshesRef.current = [];
       scene.dispose();
       camera.dispose();
       engine.dispose();
     };
-  }, []); 
-
-  
-  // Used when IMU is not used for detecting position of virtual camera
-  useEffect(() => {
-    // Update position and rotation when modelUrls changes
-    modelUrls.forEach((model, index) => {
-      if (meshesRef.current[index]) {
-        // Here you could add some code to animate the transition
-        meshesRef.current[index].position.set(model.position[0], model.position[1], model.position[2]);
-        meshesRef.current[index].rotationQuaternion = new Quaternion(model.rotation[0], model.rotation[1], model.rotation[2],model.rotation[3]);
-      }
-    });
-  }, [modelUrls]);  // This runs whenever modelUrls changes
-
-
+  }, [modelUrls]); 
   const styles = useStyles();
   return (
     <>
       <GLRenderer onCreateEngine={onCreateEngine} />
       <View style={styles.Overlay_Root}>
-          <View style={{ marginHorizontal:40,padding: 20 }}>
-            <Button title="Recalibrate" onPress={recalibrate} />
-        </View>
         <Text>
             {debug}
         </Text>
