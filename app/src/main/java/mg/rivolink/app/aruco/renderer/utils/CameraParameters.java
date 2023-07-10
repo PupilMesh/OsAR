@@ -1,4 +1,4 @@
-package mg.rivolink.app.aruco.utils;
+package mg.rivolink.app.aruco.renderer.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
 import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
@@ -83,12 +84,16 @@ public class CameraParameters {
 			return false;
 		}
 	}
+
+	public static void setLoad() {
+		loaded = true;
+		return;
+	}
 	
 	public static boolean tryLoad(Context context, Mat cameraMatrix, Mat distCoeffs){
 		File file = new File(context.getExternalCacheDir(), FILE_NAME);
-		
 		try {
-			
+
 			InputStream in = new FileInputStream(file);
 			
 			int size = in.available();
@@ -113,9 +118,9 @@ public class CameraParameters {
 					}
 				}
 			}
-			
+
 			cameraMatrix.put(0, 0, cameraMatrixArray);
-			
+			Log.i("MTX", "" + cameraMatrixArray);
 			double[] distortionCoefficientsArray = new double[DISTORTION_COEFFICIENTS_SIZE];
 			int shift = CAMERA_MATRIX_ROWS*CAMERA_MATRIX_COLS;
 			for(int i = shift; i < DISTORTION_COEFFICIENTS_SIZE + shift; i++){
