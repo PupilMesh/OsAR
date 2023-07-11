@@ -2,6 +2,9 @@ package mg.rivolink.app.aruco;
 
 import static mg.rivolink.app.aruco.renderer.utils.CameraParameters.setLoad;
 
+import static org.opencv.imgproc.Imgproc.*;
+import static org.opencv.imgcodecs.Imgcodecs.imread;
+
 import android.app.Activity;
 import android.content.Intent;
 
@@ -38,6 +41,7 @@ import org.opencv.core.MatOfPoint3f;
 import org.opencv.core.Point;
 import org.opencv.core.Point3;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.rajawali3d.view.SurfaceView;
 
@@ -48,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 	private Mat cameraMatrix;
 	private MatOfDouble distCoeffs;
 
-	public Mat rgb;
+	public Mat rgb, rgbIN;
+	Size rescaleToRGB;
 	private boolean isRunning = false;
 	private Mat gray;
 
@@ -101,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 
         camera = ((PortraitCameraLayout)findViewById(R.id.camera_layout)).getCamera();
         camera.setVisibility(SurfaceView.VISIBLE);
-        camera.setCvCameraViewListener(this);
+		camera.setCvCameraViewListener(this);
 
 		renderer = new Renderer3D(this);
 
@@ -157,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 	public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame){
 		Imgproc.cvtColor(inputFrame.rgba(), rgb, Imgproc.COLOR_RGBA2RGB);
 		gray = inputFrame.gray();
-
 		if (!isRunning){
 			isRunning = true;
 			t1.start();
@@ -176,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 		if(corners.size()>0){
 			Aruco.estimatePoseSingleMarkers(corners, SIZE, cameraMatrix, distCoeffs, rvecs, tvecs);
 			for(int i = 0;i<ids.toArray().length;i++){
-//				draw3dCube(rgb, cameraMatrix, distCoeffs, rvecs.row(i), tvecs.row(i), new Scalar(255, 0, 0));
+				draw3dCube(rgb, cameraMatrix, distCoeffs, rvecs.row(i), tvecs.row(i), new Scalar(255, 0, 0));
 				// this point dictates the "cube" rendering through image processing
 				Aruco.drawAxis(rgb, cameraMatrix, distCoeffs, rvecs.row(i), tvecs.row(i), SIZE/2.0f);
 			}

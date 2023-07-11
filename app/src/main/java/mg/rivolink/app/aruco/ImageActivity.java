@@ -40,7 +40,7 @@ import org.opencv.aruco.Aruco;
 import org.opencv.aruco.Dictionary;
 import org.opencv.aruco.DetectorParameters;
 
-import mg.rivolink.app.aruco.utils.CameraParameters;
+import mg.rivolink.app.aruco.renderer.utils.CameraParameters;
 
 public class ImageActivity extends Activity {
 
